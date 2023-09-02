@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content"><channel><title>Grant Emerson</title><description>I like to build apps, make music, and write about Swift and audio programming.</description><link>http://www.grantemerson.co/</link><language>en</language><lastBuildDate>Tue, 1 Dec 2020 17:58:09 -0500</lastBuildDate><pubDate>Tue, 1 Dec 2020 17:58:09 -0500</pubDate><ttl>250</ttl><atom:link href="http://www.grantemerson.co/feed.rss" rel="self" type="application/rss+xml"/><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji28</guid><title>Remove or Pop</title><description>SwiftMoji Entry #28</description><link>http://www.grantemerson.co/blog/SwiftMoji28</link><pubDate>Fri, 20 Dec 2019 08:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Remove or Pop</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Remove or Pop — SwiftMoji Entry #28</p>
+</div><p>Swift provides two instance methods for removing the last element of an <em>Array</em>: <em>removeLast</em> and <em>popLast</em>. The methods have the same fundamental functionality except for their return types and the way they handle the edge-case of an empty <em>Array</em>. The former returns a non-optional <em>Element</em> and crashes, while the latter returns an optional <em>Element</em> that is <em>nil</em>. This slight difference within <em>popLast</em> makes it a cleaner solution for destructively iterating through and utilizing the <em>Elements</em> of an <em>Array</em>. For example, in the case of iterating through an <em>Array</em> of <em>Strings</em> — printing and removing each <em>Element</em> — a boolean expression checking the <em>isEmpty</em> property would be needed in the declaration of a <em>while-loop</em>. Then, a separate call to removeLast would need to be inserted within the scope. Whereas with <em>popLast</em>, a <em>while-let</em> loop can be used to remove and bind the optional Element in a single statement.</p><pre><code><span class="keyword">var</span> 📧inbox = [
+    <span class="string">"Don't miss this weekend's sale at Bob's Pizzeria!"</span>,
+    <span class="string">"Urgent: Production Database Backup Failed"</span>,
+    <span class="string">"Wednesday Developer Meetup Reminder"</span>
+]
+
+<span class="keyword">while let</span> 📧 = 📧inbox.<span class="call">popLast</span>() {
+    <span class="call">print</span>(📧)
+}
+
+📧inbox.<span class="property">isEmpty</span> <span class="comment">// true</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji27</guid><title>Strings to Be Written</title><description>SwiftMoji Entry #27</description><link>http://www.grantemerson.co/blog/SwiftMoji27</link><pubDate>Fri, 20 Dec 2019 07:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Strings to Be Written</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Strings to Be Written — SwiftMoji Entry #27</p>
+</div><p>The <em>Foundation</em> framework offers quite a few additional methods to <em>Strings</em>. The <em>write(to:atomically:encoding)</em> instance method can be used to save a <em>String</em> in a file. The <em>to</em> parameter is of type <em>URL</em> and specifies the location for which the <em>String</em> is to be saved. The <em>atomically</em> parameter specifies whether or not an intermediate file should be used during the writing process. If it is set to true, an intermediate file is used to protect any existing files from corruption due to a crash. Lastly, the <em>encoding</em> parameter specifies how the <em>String’s</em> characters should be stored in memory. The <em>utf8</em> encoding method is by far the most common for Unicode and is recommended for most operations. Beware, a call to <em>write</em> must be wrapped in a <em>do-catch</em> statement to handle any errors that might occur during the process.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">let</span> documentsDirectory = <span class="type">FileManager</span>.<span class="property">default</span>.<span class="call">urls</span>(for: .<span class="dotAccess">documentDirectory</span>, in: .<span class="dotAccess">userDomainMask</span>)[<span class="number">0</span>]
+<span class="keyword">let</span> url = documentsDirectory.<span class="call">appendingPathComponent</span>(<span class="string">"Closet Contents"</span>).<span class="call">appendingPathExtension</span>(<span class="string">"txt"</span>)
+
+<span class="keyword">var</span> closet = <span class="string">"👖x2 👕x5 👔x3 👟x2 👞x2"</span>
+
+<span class="keyword">do</span> {
+    <span class="keyword">try</span> closet.<span class="call">write</span>(to: url, atomically: <span class="keyword">true</span>, encoding: .<span class="dotAccess">utf8</span>)
+} <span class="keyword">catch</span> {
+    <span class="call">print</span>(<span class="string">"Error writing string to disk:</span> \(error.<span class="property">localizedDescription</span>)<span class="string">."</span>)
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji26</guid><title>Powerful Predicates</title><description>SwiftMoji Entry #26</description><link>http://www.grantemerson.co/blog/SwiftMoji26</link><pubDate>Fri, 20 Dec 2019 06:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Powerful Predicates</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Powerful Predicates — SwiftMoji Entry #26</p>
+</div><p>The <em>Foundation</em> framework exposes a powerful class called <em>NSPredicate</em> for filtering data. An <em>NSPredicate</em> is initialized using a formatting <em>String</em> written in <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html">Apple’s predicate syntax</a>. The initializer also takes in a variadic argument list of values that can be dynamically inserted into the specified <em>format</em> <em>String</em>. In the code example, a <em>Craft</em> object is created with three properties: <em>name</em>, <em>maxAltitude</em>, and <em>maxSpeed</em>. The class definition is preceded with the <em>@objcMembers</em> attributed which allows the Swift properties to interact with the underlying Objective-C code in the <em>NSPredicate</em> API. The <em>Array</em> of <em>Crafts</em> must be cast to an <em>NSArray</em> to use the <em>filtered(using:)</em> method. The defined <em>predicate</em> filters out any elements of the <em>crafts</em> <em>NSArray</em> which don’t have a <em>name</em> beginning with <em>“Gulfstream”</em> and <em>maxAltitude</em> between <em>25,000</em> and <em>50,000</em> ft. The “<em>%@</em>” is used to substitute an object (in this case a <em>String</em>) from the argument list into the <em>predicate</em>. Additionally, the “<em>%K</em>” can be used to substitute in different key paths. The “<em>[c]</em>” tied to the end of the <em>BEGINSWITH</em> declaration allows the <em>String</em> comparison to be executed without case sensitivity. The predicate syntax is fairly straightforward. It should be easy to adopt with or without a background in querying languages such as SQL. Although Apple seems to be promoting value-based and functional programming alternatives to some of these older OOP APIs, they are still valuable to learn because many frameworks such as <em>Core Data</em> still rely heavily on them.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">@objcMembers class</span> Craft: <span class="type">NSObject</span> {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> maxAltitude: <span class="type">Int</span>
+    <span class="keyword">let</span> maxSpeed: <span class="type">Int</span>
+    
+    <span class="keyword">init</span>(name: <span class="type">String</span>, maxAltitude: <span class="type">Int</span>, maxSpeed: <span class="type">Int</span>) {
+        <span class="keyword">self</span>.<span class="property">name</span> = name
+        <span class="keyword">self</span>.<span class="property">maxAltitude</span> = maxAltitude
+        <span class="keyword">self</span>.<span class="property">maxSpeed</span> = maxSpeed
+    }
+    
+    <span class="keyword">override var</span> description: <span class="type">String</span> { name }
+}
+
+<span class="keyword">let</span> 🛩 = <span class="type">Craft</span>(name: <span class="string">"Gulfstream G550"</span>, maxAltitude: <span class="number">49500</span>, maxSpeed: <span class="number">585</span>)
+<span class="keyword">let</span> 🛬 = <span class="type">Craft</span>(name: <span class="string">"gulfstream g650"</span>, maxAltitude: <span class="number">51000</span>, maxSpeed: <span class="number">610</span>)
+<span class="keyword">let</span> 🚀 = <span class="type">Craft</span>(name: <span class="string">"BFR"</span>, maxAltitude: <span class="type">Int</span>.<span class="property">max</span>, maxSpeed: <span class="number">18000</span>)
+<span class="keyword">let</span> 🚁 = <span class="type">Craft</span>(name: <span class="string">"Bell 407"</span>, maxAltitude: <span class="number">17618</span>, maxSpeed: <span class="number">162</span>)
+<span class="keyword">let</span> crafts = [🛩, 🛬, 🚀, 🚁] <span class="keyword">as</span> <span class="type">NSArray</span>
+
+<span class="keyword">let</span> predicate = <span class="type">NSPredicate</span>(format: <span class="string">"(name BEGINSWITH[c] %@) AND (maxAltitude BETWEEN { 25000, 50000 })"</span>, <span class="string">"Gulfstream"</span>)
+<span class="keyword">let</span> listings = crafts.<span class="call">filtered</span>(using: predicate)
+<span class="call">print</span>(listings) <span class="comment">// [Gulfstream G550]</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji25</guid><title>Merging Food With Thought</title><description>SwiftMoji Entry #25</description><link>http://www.grantemerson.co/blog/SwiftMoji25</link><pubDate>Fri, 20 Dec 2019 05:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Merging Food With Thought</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Merging Food With Thought — SwiftMoji Entry #25</p>
+</div><p>Swift provides the <em>Dictionary</em> data structure as a way to store key-value pairs. Sometimes two <em>Dictionaries</em> contain semantically related data. The <em>merge(_:uniquingKeysWith:)</em> instance method can be used to combine their contents. The first parameter is labeled <em>other</em> and simply provides the <em>Dictionary</em> to be merged with. One of the defining characteristics of a <em>Dictionary</em> is its strict policy of prohibiting duplicate keys. To enforce this rule, the merging method takes in a <em>combine</em> closure. The closure takes in two values and returns one value that is the same type as the original dictionary values. In the code example, shorthand argument names <em>$0</em> and <em>$1</em> are used to return the summation of the total amount of times a food was eaten throughout the Saturday and Sunday logs.</p><pre><code><span class="keyword">let</span> saturdayFoodLog = [<span class="string">"🍎"</span>: <span class="number">2</span>, <span class="string">"🥗"</span>: <span class="number">2</span>, <span class="string">"🥚"</span>: <span class="number">3</span>, <span class="string">"🥜"</span>: <span class="number">20</span>, <span class="string">"🍪"</span>: <span class="number">2</span>]
+<span class="keyword">let</span> sundayFoodLog = [<span class="string">"🥚"</span>: <span class="number">1</span>, <span class="string">"🥗"</span>: <span class="number">1</span>, <span class="string">"🍎"</span>: <span class="number">1</span>, <span class="string">"🍪"</span>: <span class="number">1</span>, <span class="string">"🌭"</span>: <span class="number">2</span>, <span class="string">"🥩"</span>: <span class="number">1</span>]
+<span class="keyword">let</span> weekendFoodLog = saturdayFoodLog.<span class="call">merging</span>(sundayFoodLog) { $0 + $1 }
+<span class="call">print</span>(weekendFoodLog) <span class="comment">// ["🥩": 1, "🥚": 4, "🥗": 3, "🍎": 3, "🥜": 20, "🌭": 2, "🍪": 3]</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji24</guid><title>Literally Amazing</title><description>SwiftMoji Entry #24</description><link>http://www.grantemerson.co/blog/SwiftMoji24</link><pubDate>Fri, 20 Dec 2019 04:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Literally Amazing</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Literally Amazing — SwiftMoji Entry #24</p>
+</div><p>Swift, like all other programming languages, provides a set of literals — textual expressions for representing values in code. For example, in the following code, <em>“Bob”</em> is a <em>String literal</em> and <em>5.5</em> is a <em>Floating-Point literal</em>. Swift also provides some special literals that start with a <em>#</em>. The <em>#function</em> literal returns a <em>String</em> containing the name of the enclosing declaration. This can be useful for providing default implementations for IDs or other <em>String</em> properties not seen by the user. For example, in the following code, the 👤 struct has a <em>name</em> and a <em>height</em>. It also provides an <em>id</em> property so that it can be used with other APIs that require conformance to the <em>Identifiable</em> protocol. The id is computed upon initialization to be the name of the enclosing declaration (👤) joined with a static running count of people created.</p><pre><code><span class="keyword">struct</span> 👤: <span class="type">Identifiable</span> {
+    <span class="keyword">static var</span> peopleCount = <span class="number">0</span>
+    
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> height: <span class="type">Float</span>
+    
+    <span class="keyword">var</span> id: <span class="type">String</span> = {
+        <span class="type">Self</span>.<span class="property">peopleCount</span> += <span class="number">1</span>
+        <span class="keyword">return</span> <span class="string">"</span>\(<span class="keyword">#function</span>) \(<span class="type">Self</span>.<span class="property">peopleCount</span>)<span class="string">"</span>
+    }()
+}
+
+<span class="keyword">var</span> 👨🏻 = 👤(name: <span class="string">"Bob"</span>, height: <span class="number">5.5</span>)
+<span class="call">print</span>(👨🏻.id) <span class="comment">// 👤 1</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji23</guid><title>Into the Bitwise Spectrum</title><description>SwiftMoji Entry #23</description><link>http://www.grantemerson.co/blog/SwiftMoji23</link><pubDate>Fri, 20 Dec 2019 03:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Into the Bitwise Spectrum</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Into the Bitwise Spectrum — SwiftMoji Entry #23</p>
+</div><p>Swift’s seamless combination of low-level power and high-level abstractions makes it a very flexible programming language. For low-level manipulation of raw data, Swift provides a complete set of bitwise operators. In the following example, we declare a <em>HexadecimalColor</em> that aliases the <em>UInt32</em> type. The four bytes within a <em>UInt32</em> can hold the 8-bit components for red, green, and blue. An orange color with value #FF872C can be declared as a hexadecimal literal in swift by removing the # and replacing it with a <em>0x</em> prefix. We can then extract the RGB components from the color by using the bitwise AND (<em>&amp;</em>) and right shift (<em>&gt;&gt;</em>) operators. The former sets all undesirable bits (those not set to one in the rhs) to 0. The latter then shifts those bits over by the number described on its rhs. This allows the color component to be converted to the appropriate decimal representation.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">typealias</span> HexadecimalColor = <span class="type">UInt32</span>
+
+<span class="keyword">let</span> 🎨: <span class="type">HexadecimalColor</span> = 0xFF872C <span class="comment">// RGB(255, 135, 44)</span>
+<span class="keyword">let</span> 🔴 = (🎨 &amp; 0xFF0000) &gt;&gt; <span class="number">16</span> <span class="comment">// 255</span>
+<span class="keyword">let</span> 💚 = (🎨 &amp; 0x00FF00) &gt;&gt; <span class="number">8</span> <span class="comment">// 135</span>
+<span class="keyword">let</span> 🔵 = 🎨 &amp; 0x0000FF <span class="comment">// 44</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji22</guid><title>Indexing Into Randomness</title><description>SwiftMoji Entry #22</description><link>http://www.grantemerson.co/blog/SwiftMoji22</link><pubDate>Fri, 20 Dec 2019 02:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Indexing Into Randomness</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Indexing Into Randomness — SwiftMoji Entry #22</p>
+</div><p>In most programming languages, to obtain a random element from an array one must first generate a random integer index value within a certain range. In Swift, this operation can be done in a more readable and convenient fashion using <em>Array’s</em> <em>randomElement()</em> method. The method returns an optional <em>Element</em> because it might return <em>nil</em> in the case that the array is empty.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">let</span> buffet = [<span class="string">"🍕"</span>, <span class="string">"🍔"</span>, <span class="string">"🌭"</span>, <span class="string">"🥗"</span>, <span class="string">"🌯"</span>, <span class="string">"🥘"</span>]
+<span class="keyword">let</span> dinner = buffet.<span class="call">randomElement</span>()!
+<span class="call">print</span>(<span class="string">"Tonight I will eat</span> \(dinner)<span class="string">."</span>) <span class="comment">// Tonight I will eat 🍕.</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji21</guid><title>Greatest or Biggest</title><description>SwiftMoji Entry #21</description><link>http://www.grantemerson.co/blog/SwiftMoji21</link><pubDate>Fri, 20 Dec 2019 01:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Greatest or Biggest</h1><span class="article-date">Published on Dec 20, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Greatest or Biggest — SwiftMoji Entry #21</p>
+</div><p>Swift provides a convenient static method on <em>Double</em> called <em>maximumMagnitude(_:_:)</em>. It has two <em>Double</em> parameters labeled <em>x</em> and <em>y</em>. Instead of simply returning the greatest, it compares the <em>magnitude</em> property of both <em>Doubles</em> to obtain the one with the greatest absolute value. In the code example, the reduce function is used with an initial value of 0 and <em>maximumMagnitude</em> as the combining method to extract the maximum velocity from an <em>Array</em> of <em>Doubles</em>.</p><pre><code><span class="keyword">let</span> 🚀<span class="type">Velocities</span> = [<span class="number">700.55</span>, <span class="number">500.3</span>, <span class="number">1015.0</span>, -<span class="number">50.0</span>, -<span class="number">2000.25</span>]
+<span class="keyword">let</span> maxVelocity = 🚀<span class="type">Velocities</span>.<span class="call">reduce</span>(<span class="number">0</span>, <span class="type">Double</span>.<span class="property">maximumMagnitude</span>)
+<span class="call">print</span>(<span class="string">"</span>\(maxVelocity) <span class="string">mph"</span>) <span class="comment">// -2000.25 mph</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji20</guid><title>Binary To Decimal</title><description>SwiftMoji Entry #20</description><link>http://www.grantemerson.co/blog/SwiftMoji20</link><pubDate>Tue, 10 Dec 2019 11:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Binary To Decimal</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Binary To Decimal — SwiftMoji Entry #20</p>
+</div><p>Swift offers a generic initializer on <em>Int</em> for converting non-base-10 numerical <em>Strings</em> such as binary, octal, or hexadecimal to the decimal format. The initializer is written as <em>init(_:radix:)</em> where the first parameter is the numerical data encoded in a type conforming to the <em>StringProtocol</em>, and the second, labeled <em>radix</em>, is the base for conversion. The <em>radix</em> must be between 2 and 36. If a character in the input <em>String</em> lies beyond the bounds of the specified <em>radix</em>, the initializer fails and returns <em>nil</em>. In the code example, a binary encoded phone number is converted back to decimal using a radix of 2.</p><pre><code><span class="keyword">let</span> binaryMessage = <span class="string">"101001011001000101111011110101011"</span>
+<span class="keyword">let</span> 📞🔢 = <span class="type">Int</span>(binaryMessage, radix: <span class="number">2</span>)!
+<span class="call">print</span>(📞🔢) <span class="comment">// 5555550123</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji19</guid><title>Battle of the Units</title><description>SwiftMoji Entry #19</description><link>http://www.grantemerson.co/blog/SwiftMoji19</link><pubDate>Tue, 10 Dec 2019 10:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Battle of the Units</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Battle of the Units — SwiftMoji Entry #19</p>
+</div><p>Apple’s <em>Foundation</em> framework implements many of the components that are necessary to build great applications but not essential enough to be included in the Swift Standard Library. Two such components are the <em>Measurement</em> and <em>Unit</em> data structures which make code vastly more readable by encapsulating magic numbers – random numerical literals such as 4 or 1.7 within a codebase – in class variables with the appropriate naming conventions. They also handle conversion seamlessly and intuitively. The <em>Measurement</em> struct is initialized with a <em>Double</em> value and a <em>UnitType</em>. Due to the included implementation of all elementary mathematical operations, calculations such as multiplication can be done between two <em>Measurements</em> with the corresponding operator (<em>*</em>). In the code example, a temperature <em>Measurement</em> is created with the class variable <em>Unit</em> for <em>Fahrenheit</em> on <em>UnitTemperature</em>. The <em>converted(to:)</em> method is then called on this variable with an argument of <em>UnitTemperature.celsius</em>. The updated value is then read using the value property.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">let</span> 🇺🇸🧊 = <span class="type">Measurement</span>(value: <span class="number">13</span>, unit: <span class="type">UnitTemperature</span>.<span class="property">fahrenheit</span>)
+<span class="keyword">let</span> 🇬🇧🧊 = 🇺🇸🧊.<span class="call">converted</span>(to: <span class="type">UnitTemperature</span>.<span class="property">celsius</span>)
+
+<span class="call">print</span>(<span class="string">"It's</span> \(<span class="type">Int</span>(🇺🇸🧊.value))<span class="string">ºF or</span> \(<span class="type">Int</span>(🇬🇧🧊.value))<span class="string">ºC outside! 🥶"</span>)
+<span class="comment">// It's 13ºF or -10ºC outside! 🥶</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji18</guid><title>Ad Infinitum and Beyond</title><description>SwiftMoji Entry #18</description><link>http://www.grantemerson.co/blog/SwiftMoji18</link><pubDate>Tue, 10 Dec 2019 09:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Ad Infinitum and Beyond</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Ad Infinitum and Beyond — SwiftMoji Entry #18</p>
+</div><p>Swift offers range operators to express a span of values in shorthand. Both the closed range and half-open range operators are fairly well known. The former is expressed as <em>a…b</em> and includes the value b. The latter is expressed as <em>a..&lt;b</em> and it excludes the last value. These two operators have a lesser-known cousin called the one-sided range. These ranges can be written as <em>a…</em> (for a to infinity), <em>…a</em> (for -infinity to a), or <em>..&lt;a</em> (for -infinity to one less than a). One-sided ranges can be used in subscripts, loops, and other situations such as the one below. In the following example, the seattle <em>String</em> is searched for the <em>String.Index</em> after that of the space. With that <em>index</em>, a one-sided range can be initialized that goes to positive infinity. In the case of sunny LA, we can replace the entire weather forecast with a simple emoji. The one-sided range allows <em>replacingCharacters</em> to remove from <em>index</em> till the <em>endIndex</em> is reached. Then it can simply insert the specified <em>String</em>.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">var</span> seattle = <span class="string">"Weather: ☁️-☁️-⛈-🌦-☁️-☁️-☁️"</span>
+<span class="keyword">let</span> index = seattle.<span class="call">index</span>(after: seattle.<span class="call">firstIndex</span>(of: <span class="string">" "</span>)!)
+<span class="keyword">let</span> la = seattle.<span class="call">replacingCharacters</span>(in: index..., with: <span class="string">"Always ☀️"</span>) <span class="comment">// Weather: Always ☀️</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji17</guid><title>Editing Strings with CharacterSet</title><description>SwiftMoji Entry #17</description><link>http://www.grantemerson.co/blog/SwiftMoji17</link><pubDate>Tue, 10 Dec 2019 08:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Editing Strings with CharacterSet</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Editing Strings with CharacterSet — SwiftMoji Entry #17</p>
+</div><p>The <em>Foundation</em> framework provides many great utilities to build upon the Swift Standard Library. One of these utilities is the <em>CharacterSet</em> struct (or the <em>NSCharacterSet</em> class in Objective-C) which is designed to hold a set of Unicode characters. A <em>CharacterSet</em> can be passed in as an argument to many of <em>Foundation’s</em> built-in extensions to <em>String</em>. For example, <em>CharacterSet’s</em> static member called <em>symbols</em> could be used to remove all emojis from a String. The <em>symbol</em> CharacterSet can simply be passed into the <em>components(seperatedBy:)</em> method on the <em>String</em> to be formatted. The resulting <em>Array</em> can then be converted back into a <em>String</em> using the <em>joined()</em> method. <em>CharacterSet</em> includes a variety of static instances such as <em>alphanumerics</em> or <em>punctuationCharacters</em> that come in handy when performing complex searches or parsing data.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">let</span> emojis = <span class="type">CharacterSet</span>.<span class="property">symbols</span>
+
+<span class="keyword">var</span> 🗺 = <span class="string">"Forwards 50 ft. 👆 Left 20 ft. 👈 Backwards 10 ft. 👇"</span>
+<span class="call">print</span>(🗺) <span class="comment">// Forwards 50 ft. 👆 Left 20 ft. 👈 Backwards 10 ft. 👇</span>
+🗺 = 🗺.<span class="call">components</span>(separatedBy: emojis).<span class="call">joined</span>()
+<span class="call">print</span>(🗺) <span class="comment">// Forwards 50 ft.  Left 20 ft.  Backwards 10 ft.</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji16</guid><title>In Da Range</title><description>SwiftMoji Entry #16</description><link>http://www.grantemerson.co/blog/SwiftMoji16</link><pubDate>Tue, 10 Dec 2019 07:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>In Da Range</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">In Da Range — SwiftMoji Entry #16</p>
+</div><p>Swift provides the pattern matching operator (<em>~=</em>) for matching cases in <em>switch</em> statements. If the operator is overloaded, the specified type of the lhs (left-hand side) can be compared against various values of the rhs in a switch statement. Although the <em>~=</em> operator is hidden under the <em>switch</em> statement’s syntax, it can still be used throughout code directly. In the code example, a musical note is checked to be within the <em>Range</em> of notes of a musician using the <em>~=</em> operator.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">struct</span> Note: <span class="type">Comparable</span> {
+    <span class="keyword">enum</span> NoteLetter: <span class="type">Int</span> {
+        <span class="keyword">case</span> <span class="type">A</span>, <span class="type">Bb</span>, <span class="type">B</span>, <span class="type">C</span>, <span class="type">Db</span>, <span class="type">D</span>, <span class="type">Eb</span>, <span class="type">E</span>, <span class="type">F</span>, <span class="type">Gb</span>, <span class="type">G</span>, <span class="type">Ab</span>
+    }
+    
+    <span class="keyword">let</span> letter: <span class="type">NoteLetter</span>
+    <span class="keyword">let</span> octave: <span class="type">Int</span>
+    
+    <span class="keyword">init</span>(<span class="keyword">_</span> letter: <span class="type">NoteLetter</span>, <span class="keyword">_</span> octave: <span class="type">Int</span>) {
+        <span class="keyword">self</span>.<span class="property">letter</span> = letter
+        <span class="keyword">self</span>.<span class="property">octave</span> = octave
+    }
+    
+    <span class="keyword">static func</span> &lt; (lhs: <span class="type">Note</span>, rhs: <span class="type">Note</span>) -&gt; <span class="type">Bool</span> {
+        <span class="keyword">if</span> lhs.<span class="property">octave</span> != rhs.<span class="property">octave</span> {
+            <span class="keyword">return</span> lhs.<span class="property">octave</span> &lt; rhs.<span class="property">octave</span>
+        }
+        <span class="keyword">return</span> lhs.<span class="property">letter</span>.<span class="property">rawValue</span> &lt; lhs.<span class="property">letter</span>.<span class="property">rawValue</span>
+    }
+}
+
+<span class="keyword">struct</span> Musician {
+    <span class="keyword">let</span> instrument: <span class="type">String</span>
+    <span class="keyword">let</span> range: <span class="type">ClosedRange</span>&lt;<span class="type">Note</span>&gt;
+}
+
+<span class="keyword">var</span> 👨🏻‍🦲 = <span class="type">Musician</span>(instrument: <span class="string">"🎺"</span>, range: <span class="type">Note</span>(.<span class="dotAccess">B</span>, <span class="number">4</span>)...<span class="type">Note</span>(.<span class="dotAccess">Gb</span>, <span class="number">6</span>))
+
+<span class="keyword">if</span> 👨🏻‍🦲.range ~= <span class="type">Note</span>(.<span class="dotAccess">Gb</span>, <span class="number">3</span>) {
+    <span class="call">print</span>(<span class="string">"Awesome, you are a professional!"</span>)
+} <span class="keyword">else</span> {
+    <span class="call">print</span>(<span class="string">"You must practice more."</span>)
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji15</guid><title>Be Thou Removed</title><description>SwiftMoji Entry #15</description><link>http://www.grantemerson.co/blog/SwiftMoji15</link><pubDate>Tue, 10 Dec 2019 06:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Be Thou Removed</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Be Thou Removed — SwiftMoji Entry #15</p>
+</div><p>One convenient instance method on <em>Collections</em> is the higher-order <em>removeAll(where:)</em> function. It operates on the calling <em>Collection</em> in-place, in constant time without the need to copy a return value. The <em>where</em> parameter is a user-provided closure that accepts an <em>Element</em> as input and returns a <em>Bool</em> determining which <em>Elements</em> are to be removed. The code example below compares two approaches for removing the even numbers from an <em>[Int]</em>. The first utilizes the <em>filter(_:)</em> method by negating a call to <em>isEven</em> and returning the result in the <em>filter’s</em> closure. Additionally, this solution requires the filtered array to be copied back into the original variable. The second approach uses the <em>removeAll(where:)</em> method in-place on the <em>[Int]</em> by passing the <em>isEven</em> closure in as an argument. The second approach is preferred due to its efficiency and increased readability.</p><pre><code><span class="keyword">var</span> 🔢 = <span class="type">Array</span>(<span class="number">1</span>...<span class="number">100</span>)
+<span class="keyword">let</span> isEven: (<span class="type">Int</span>) -&gt; <span class="type">Bool</span> = { $0 % <span class="number">2</span> == <span class="number">0</span> }
+
+<span class="comment">// No 🚫</span>
+🔢 = 🔢.<span class="call">filter</span> { !<span class="call">isEven</span>($0) }
+
+<span class="comment">// Yes ✅</span>
+🔢.<span class="call">removeAll</span>(where: isEven)
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji14</guid><title>Dictionaries Assemble</title><description>SwiftMoji Entry #14</description><link>http://www.grantemerson.co/blog/SwiftMoji14</link><pubDate>Tue, 10 Dec 2019 05:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Dictionaries Assemble</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Dictionaries Assemble — SwiftMoji Entry #14</p>
+</div><p>The <em>Dictionary</em> is Swift’s data structure for mapping unique keys to corresponding values. They are an optimal solution for recording important metadata about the members of a set. In the code example, 👥<em>Present</em> records the attendance of each individual in a role call. Unfortunately, the unordered nature of <em>Dictionaries</em> becomes problematic when iterating through the names in 👥<em>Present</em> in alphabetical order. This can be accomplished by calling the <em>sorted(by:)</em> method with a key-value comparison closure parameter called <em>areInIncreasingOrder</em>. The closure in the example uses the <em>&lt;</em> operator between the two incoming keys because the names in 👥<em>Present</em> need to be called alphabetically. The return type of <em>sorted(by:)</em> is an <em>Array</em> of key-value tuples. This can be directly inserted into a <em>for-in</em> loop for easy iteration.</p><pre><code><span class="keyword">var</span> 👥<span class="type">Present</span> = [
+    <span class="string">"Allegra Love"</span>: <span class="keyword">false</span>,
+    <span class="string">"Azeem Bell"</span>: <span class="keyword">false</span>,
+    <span class="string">"Adina Williamson"</span>: <span class="keyword">false</span>,
+    <span class="string">"Niall Lim"</span>: <span class="keyword">false</span>,
+    <span class="string">"Asiyah Fuentes"</span>: <span class="keyword">false</span>
+]
+
+<span class="keyword">for</span> 👤 <span class="keyword">in</span> 👥<span class="type">Present</span>.<span class="call">sorted</span>(by: { $0.<span class="property">key</span> &lt; $1.<span class="property">key</span> }) {
+    <span class="keyword">let</span> name = 👤.key
+    <span class="call">print</span>(<span class="string">"</span>\(name) <span class="string">is here."</span>)
+    👥<span class="type">Present</span>[name] = <span class="keyword">true</span>
+}
+
+<span class="comment">// Adina Williamson is here.
+// Allegra Love is here.
+// Asiyah Fuentes is here.
+// Azeem Bell is here.
+// Niall Lim is here.</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji13</guid><title>Lunar Phases</title><description>SwiftMoji Entry #13</description><link>http://www.grantemerson.co/blog/SwiftMoji13</link><pubDate>Tue, 10 Dec 2019 04:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Lunar Phases</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Lunar Phases — SwiftMoji Entry #13</p>
+</div><p>Almost every app across the Apple ecosystem relies on an essential framework called <em>Foundation</em>. In <em>Foundation</em>, Apple provides developers with many useful types and methods. One such type is the <em>Calendar</em> struct which offers a simple API for doing complex calendrical calculations without the need to account for leap years or daylight savings. This is incredibly useful when determining the difference in time between two dates. In the following example, <em>Calendar</em>’s <em>dateComponents(_:from:to:)</em> method is used in conjunction with some magic math to calculate the current lunar phase to a certain degree of accuracy. The <em>daysSinceStart</em> constant is the number of days between now and the first new moon of 1970. That is multiplied by 86,400 to convert to seconds. The offset of 12,300 seconds accounts for the first new moon of 1970 occurring slightly before midnight. Then the total seconds elapsed in the current lunar phase can be calculated by taking the remainder after dividing by 2,551,443 (the number of seconds in a lunar month). The seconds elapsed since the start of the current phase can then be divided by 637,861 to get the current quarter. Modulo 637861 returns the seconds elapsed in the current quarter. If that time interval is greater than a day, the <em>index</em> of the current phase is rounded up.</p><p>Credits: The algorithm was taken from this <a href="https://codegolf.stackexchange.com/questions/69683/calculate-the-lunar-phase">post</a> and adapted for Swift.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">extension</span> <span class="type">Date</span> {
+    <span class="keyword">static let</span> dateFormatter: <span class="type">DateFormatter</span> = {
+        <span class="keyword">let</span> dateFormatter = <span class="type">DateFormatter</span>()
+        dateFormatter.<span class="property">dateFormat</span> = <span class="string">"MM/dd/yyyy"</span>
+        <span class="keyword">return</span> dateFormatter
+    }()
+    
+    <span class="keyword">init</span>(<span class="keyword">_</span> text: <span class="type">String</span>) {
+        <span class="keyword">self</span> = <span class="type">Self</span>.<span class="property">dateFormatter</span>.<span class="call">date</span>(from: text)!
+    }
+}
+
+<span class="keyword">let</span> lunarPhaseStart = <span class="type">Date</span>(<span class="string">"01/07/1970"</span>)
+<span class="keyword">let</span> daysSinceStart = <span class="type">Calendar</span>.<span class="property">current</span>.<span class="call">dateComponents</span>(
+    [.<span class="dotAccess">day</span>],
+    from: lunarPhaseStart,
+    to: <span class="type">Date</span>()
+).<span class="property">day</span>!
+
+<span class="keyword">let</span> seconds = daysSinceStart * <span class="number">86400</span> + <span class="number">12300</span>
+<span class="keyword">let</span> lunarMonths = seconds % <span class="number">2551443</span>
+<span class="keyword">let</span> lunarMonthPart = lunarMonths / <span class="number">637861</span>
+<span class="keyword">let</span> secondsSinceMainPhase = lunarMonths % <span class="number">637861</span>
+
+<span class="keyword">let</span> index = <span class="number">2</span> * lunarMonthPart + (<span class="number">86400</span> &lt;= secondsSinceMainPhase ? <span class="number">1</span> : <span class="number">0</span>)
+
+<span class="keyword">let</span> lunarPhases = [<span class="string">"🌑"</span>, <span class="string">"🌒"</span>, <span class="string">"🌓"</span>, <span class="string">"🌔"</span>, <span class="string">"🌕"</span>, <span class="string">"🌖"</span>, <span class="string">"🌗"</span>, <span class="string">"🌘"</span>]
+<span class="keyword">let</span> lunarPhase = lunarPhases[index]
+
+<span class="keyword">let</span> currentDate = <span class="type">Date</span>.<span class="property">dateFormatter</span>.<span class="call">string</span>(from: <span class="type">Date</span>())
+<span class="call">print</span>(<span class="string">"</span>\(currentDate) <span class="string">-</span> \(lunarPhase)<span class="string">"</span>) <span class="comment">// 10/17/19 - 🌖</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji12</guid><title>Toggling Booleans</title><description>SwiftMoji Entry #12</description><link>http://www.grantemerson.co/blog/SwiftMoji12</link><pubDate>Tue, 10 Dec 2019 03:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Toggling Booleans</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Toggling Booleans — SwiftMoji Entry #12</p>
+</div><p>One very common task in programming is to switch the value of a boolean. This is generally accomplished using the prefix operator <em>!</em> like so a = !a. However, when changing the value of a boolean nested within multiple <em>structs</em> or <em>classes</em>, this can often become unwieldy. Thankfully, Swift provides an elegant solution to this problem. The <em>Bool</em> struct contains a mutating method called <em>toggle()</em>, that when called, switches the value in-place. Additionally, the method is marked with the <em>@inlinable</em> attribute. This allows the Swift compiler to replace calls to toggle with the implementation (self = !self) wherever it’s used. This ensures that users of the toggle method experience no overhead due to entering and exiting scopes.</p><pre><code><span class="keyword">struct</span> House {
+    <span class="keyword">var</span> address: <span class="type">String</span>
+    <span class="keyword">var</span> is💡<span class="type">On</span>: <span class="type">Bool</span> = <span class="keyword">false</span>
+}
+
+<span class="keyword">var</span> 🏠 = <span class="type">House</span>(address: <span class="string">"P. Sherman 42 Wallaby Way, Sydney"</span>)
+
+🏠.<span class="keyword">is</span>💡<span class="type">On</span> = !🏠.<span class="keyword">is</span>💡<span class="type">On</span> <span class="comment">// 🚫</span>
+🏠.<span class="keyword">is</span>💡<span class="type">On</span>.<span class="call">toggle</span>() <span class="comment">// ✅</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji11</guid><title>Hashing McGlashing</title><description>SwiftMoji Entry #11</description><link>http://www.grantemerson.co/blog/SwiftMoji11</link><pubDate>Tue, 10 Dec 2019 02:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Hashing McGlashing</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Hashing McGlashing — SwiftMoji Entry #11</p>
+</div><p>Conformance to the <em>Hashable</em> protocol allows each 👤 in a set to be uniquely identified as long as one property is distinct. This unique ID called a hash value can be used to search a <em>Set</em> for a member in constant time (O(1)). This efficiency is a result of the <em>contains(_:)</em> method having direct access to each corresponding memory address in a hash table, instead of being required to iterate over each <em>Element</em> as in <em>Arrays</em>. As of Swift 4.2, the implementation of the underlying <em>hashValue</em> computed property is automatically provided by passing a value’s properties into the <em>Hasher</em> struct’s <em>combine(_:)</em> method and then using the <em>finalize()</em> method to obtain the <em>Int</em>.</p><pre><code><span class="keyword">struct</span> 👤: <span class="type">Hashable</span> {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> age: <span class="type">Int</span>
+    <span class="keyword">let</span> apartmentNumber: <span class="type">Int</span>
+    <span class="keyword">let</span> ownsPets: <span class="type">Bool</span>
+}
+
+<span class="keyword">typealias</span> 📩 = <span class="type">String</span>
+
+<span class="keyword">struct</span> 📪 {
+    <span class="keyword">var</span> contents = [📩]()
+}
+
+<span class="keyword">struct</span> 🏢 {
+    <span class="keyword">let</span> residents: <span class="type">Set</span>&lt;👤&gt;
+    <span class="keyword">var</span> mailbox = 📪()
+}
+
+<span class="keyword">var</span> 🏠 = 🏢(residents: [
+    👤(name: <span class="string">"Nicolas"</span>, age: <span class="number">21</span>, apartmentNumber: <span class="number">315</span>, ownsPets: <span class="keyword">false</span>),
+    👤(name: <span class="string">"Sam McGlashing"</span>, age: <span class="number">50</span>, apartmentNumber: <span class="number">118</span>, ownsPets: <span class="keyword">true</span>),
+    👤(name: <span class="string">"Jonah"</span>, age: <span class="number">35</span>, apartmentNumber: <span class="number">220</span>, ownsPets: <span class="keyword">true</span>),
+    👤(name: <span class="string">"Sam McGlashing"</span>, age: <span class="number">25</span>, apartmentNumber: <span class="number">305</span>, ownsPets: <span class="keyword">true</span>)
+])
+
+<span class="keyword">let</span> 👨🏼‍🦳 = 👤(name: <span class="string">"Sam McGlashing"</span>, age: <span class="number">50</span>, apartmentNumber: <span class="number">118</span>, ownsPets: <span class="keyword">true</span>)
+<span class="keyword">let</span> 💌 = <span class="string">"Hello Sam!"</span>
+
+<span class="keyword">if</span> 🏠.residents.<span class="call">contains</span>(👨🏼‍🦳) {
+    🏠.mailbox.<span class="property">contents</span>.<span class="call">append</span>(💌)
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji10</guid><title>Different Days</title><description>SwiftMoji Entry #10</description><link>http://www.grantemerson.co/blog/SwiftMoji10</link><pubDate>Tue, 10 Dec 2019 01:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Different Days</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Different Days — SwiftMoji Entry #10</p>
+</div><p>Swift 5.1 added the capability to diff any two <em>BidirectionalCollections</em> with equivalent <em>Element</em> types. The function is called <em>difference(from:)</em> and it has two parameters. The first is labeled <em>from</em> and it indicates the starting state from which to calculate the changes necessary to convert it to be equal to the state of the caller. Although not needed if the <em>Elements</em> are <em>Equatable</em>, the <em>difference</em> function has a second parameter labeled <em>by</em> which is a closure taking two elements and returning a boolean based on equivalence. In the following example, two <em>Arrays</em> are initialized with a collection of calendar items. These <em>Arrays</em> represent a summer and winter schedule. When the <em>difference</em> function is called on <em>winterSchedule</em> with a base state of <em>summerSchedule</em>, the resulting <em>CollectionDifference</em> contains one <em>removal</em> for mowing grass and two <em>insertions</em> for shoveling and starting the fireplace.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">struct</span> 🗓: <span class="type">Equatable</span> {
+    <span class="keyword">let</span> title: <span class="type">String</span>
+    <span class="keyword">let</span> date: <span class="type">Date</span>
+}
+
+<span class="keyword">extension</span> <span class="type">Date</span> {
+    <span class="keyword">static let</span> dateFormatter: <span class="type">DateFormatter</span> = {
+        <span class="keyword">let</span> dateFormatter = <span class="type">DateFormatter</span>()
+        dateFormatter.<span class="property">dateFormat</span> = <span class="string">"h:mm a"</span>
+        <span class="keyword">return</span> dateFormatter
+    }()
+    
+    <span class="keyword">init</span>(<span class="keyword">_</span> text: <span class="type">String</span>) {
+        <span class="keyword">self</span> = <span class="type">Self</span>.<span class="property">dateFormatter</span>.<span class="call">date</span>(from: text)!
+    }
+}
+
+<span class="keyword">let</span> summerSchedule = [
+    🗓(title: <span class="string">"Eat 🍳"</span>, date: <span class="type">Date</span>(<span class="string">"7:00 AM"</span>)),
+    🗓(title: <span class="string">"🚗 to 🏢"</span>, date: <span class="type">Date</span>(<span class="string">"9:00 AM"</span>)),
+    🗓(title: <span class="string">"Eat 🍽"</span>, date: <span class="type">Date</span>(<span class="string">"5:00 PM"</span>)),
+    🗓(title: <span class="string">"Mow 🌱"</span>, date: <span class="type">Date</span>(<span class="string">"6:00 PM"</span>))
+]
+
+<span class="keyword">let</span> winterSchedule = [
+    🗓(title: <span class="string">"Eat 🍳"</span>, date: <span class="type">Date</span>(<span class="string">"7:00 AM"</span>)),
+    🗓(title: <span class="string">"Shovel Driveway"</span>, date: <span class="type">Date</span>(<span class="string">"8:00 AM"</span>)),
+    🗓(title: <span class="string">"🚗 to 🏢"</span>, date: <span class="type">Date</span>(<span class="string">"9:00 AM"</span>)),
+    🗓(title: <span class="string">"Eat 🍽"</span>, date: <span class="type">Date</span>(<span class="string">"5:00 PM"</span>)),
+    🗓(title: <span class="string">"Start 🔥place"</span>, date: <span class="type">Date</span>(<span class="string">"6:00 PM"</span>))
+]
+
+<span class="keyword">let</span> changes = winterSchedule.<span class="call">difference</span>(from: summerSchedule)
+<span class="keyword">let</span> summerOnlyTasks = changes.<span class="property">removals</span>.<span class="property">count</span> <span class="comment">// 1</span>
+<span class="keyword">let</span> winterOnlyTasks = changes.<span class="property">insertions</span>.<span class="property">count</span> <span class="comment">// 2</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji9</guid><title>Uniformity</title><description>SwiftMoji Entry #9</description><link>http://www.grantemerson.co/blog/SwiftMoji9</link><pubDate>Mon, 9 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Uniformity</h1><span class="article-date">Published on Dec 9, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Uniformity — SwiftMoji Entry #9</p>
+</div><p>Swift provides the <em>allSatisfy(_:)</em> instance method on <em>Sequences</em> for checking if a condition remains true throughout the contained <em>Elements</em>. It has one parameter: a closure that takes in an <em>Element</em> and returns a <em>Bool</em>. This method removes the cumbersome task of setting up a <em>for-in</em> loop or the convoluted process of checking for uniformity via <em>reduce</em>. The code example utilizes this method to check whether or not the contents of an <em>Array</em> of <em>Animal</em> enum cases match the 🐶 case.</p><pre><code><span class="keyword">enum</span> Animal {
+    <span class="keyword">case</span> 🐶, 🕷, 🐙, 🦁, 🐊
+}
+
+<span class="keyword">var</span> animals: [<span class="type">Animal</span>] = [.🐶, .🕷, .🐶, .🐊, .🐙, .🐶, .🦁]
+animals.<span class="call">removeAll</span> { $0 != .🐶 }
+<span class="keyword">if</span> animals.<span class="call">allSatisfy</span>({ $0 == .🐶 }) {
+    <span class="call">print</span>(<span class="string">"Yay! You removed all the scary animals!"</span>)
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji8</guid><title>What’s in a Name</title><description>SwiftMoji Entry #8</description><link>http://www.grantemerson.co/blog/SwiftMoji8</link><pubDate>Sun, 8 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>What’s in a Name</h1><span class="article-date">Published on Dec 8, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">What’s in a Name — SwiftMoji Entry #8</p>
+</div><p>Extracting a list of locations from a <em>String</em>, identifying the language of its contents, or sorting the contained words based on their parts of speech is just a fraction of the limitless capabilities of the <em>Foundation</em> framework’s <em>NSLinguisticTagger</em> class. In the following example, an <em>NSLinguisticTagger</em> is initialized with the <em>nameType</em> <em>NSLinguisticTagScheme</em> and an arbitrary <em>options</em> parameter “reserved for later use.” The tagging scheme specifies the type of text to be enumerated over. The <em>String</em> to be analyzed in this example is an outline of a family. The <em>String</em> can be passed into the <em>tagger</em> for evaluation via its <em>string</em> property. The <em>enumerateTags(in:scheme:options:using:)</em> method on the <em>tagger</em> is then used to extract the desired elements. The method is split into two processes: <strong>segmentation</strong> and <strong>tagging</strong>. First, the portion of the <em>string</em> property within the specified range is split up into segments based on the <em>unit</em> parameter. Then, the <em>units</em> that match the specified <em>scheme</em> are passed to a closure with a range value of their location. In the code example, after binding the optional <em>tag</em> it is verified to match the <em>personalName</em> type. If it does, the <em>NSRange</em> can be cast to a Swift <em>Range</em> to subscript the original string for the tagged name value.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">var</span> 👨‍👩‍👧‍👦 = <span class="string">"""
+    Family:
+    Father's Name: Jayson
+    Mother's Name: Kathrine
+    Daughter's Name: Alannah
+    Son's Name: Jacob
+"""</span>
+
+<span class="keyword">let</span> tagger = <span class="type">NSLinguisticTagger</span>(tagSchemes: [.<span class="dotAccess">nameType</span>], options: <span class="number">0</span>)
+tagger.<span class="property">string</span> = 👨‍👩‍👧‍👦
+
+<span class="keyword">let</span> range = <span class="type">NSRange</span>(👨‍👩‍👧‍👦.startIndex..&lt;👨‍👩‍👧‍👦.endIndex, in: 👨‍👩‍👧‍👦)
+
+<span class="keyword">let</span> options: <span class="type">NSLinguisticTagger</span>.<span class="type">Options</span> = [.<span class="dotAccess">omitPunctuation</span>, .<span class="dotAccess">omitWhitespace</span>, .<span class="dotAccess">joinNames</span>]
+
+tagger.<span class="call">enumerateTags</span>(in: range, unit: .<span class="dotAccess">word</span>, scheme: .<span class="dotAccess">nameType</span>, options: options) { (tag, tokenRange, <span class="keyword">_</span>) <span class="keyword">in
+    if let</span> tag = tag, tag == .<span class="dotAccess">personalName</span> {
+        <span class="keyword">if let</span> range = <span class="type">Range</span>(tokenRange, in: 👨‍👩‍👧‍👦) {
+            <span class="keyword">let</span> name = 👨‍👩‍👧‍👦[range]
+            <span class="call">print</span>(<span class="string">"</span>\(name)<span class="string">"</span>) <span class="comment">// Jayson Katherine Alannah Jacob</span>
+        }
+    }
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji7</guid><title>Same String, Different Diacritics</title><description>SwiftMoji Entry #7</description><link>http://www.grantemerson.co/blog/SwiftMoji7</link><pubDate>Sat, 7 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Same String, Different Diacritics</h1><span class="article-date">Published on Dec 7, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Same String, Different Diacritics — SwiftMoji Entry #7</p>
+</div><p>When searching a database for text entry, it can often be useful to compare results with a predicate without taking into account any differences in capitalization or accents. The Foundation framework has a convenient method called <em>folding(options:locale:)</em> for standardizing <em>Strings</em> for comparison. It is an instance method on <em>String</em> and can be called with dot syntax. The first parameter labeled <em>options</em> takes in an <em>Array</em> of <em>Strings.CompareOptions</em>. <em>CompareOptions</em> are values representing how search algorithms should compare <em>Strings</em>. For example, <em>diacriticInsensitive</em> disregards accents and <em>caseInsensitive</em> omits the need for matching capitalization. The <em>locale</em> parameter simply provides the linguistic context for removing character distinctions. The method is called folding because it performs what is often referred to as character folding. Character folding is the process of transforming a character into another one of its representations. In the code example, the “á” in 👨‍🌾’s name is folded to “a” and the “S” in 👨‍💻’s name is folded to “s”. Lastly, if you wish to explore the capabilities of folding further, the documentation can be found under the Objective-C version on <em>NSString</em>. The folding method was ported over to <em>StringProtocol</em>, but all the corresponding information regarding its usage remains absent.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">struct</span> 👤 {
+    <span class="keyword">var</span> name: <span class="type">String</span>
+    <span class="keyword">var</span> comparisonName: <span class="type">String</span> {
+        name.<span class="call">folding</span>(options: [.<span class="dotAccess">diacriticInsensitive</span>, .<span class="dotAccess">widthInsensitive</span>, .<span class="dotAccess">caseInsensitive</span>],
+                     locale: .<span class="dotAccess">current</span>)
+    }
+}
+
+<span class="keyword">var</span> 👨‍💻 = 👤(name: <span class="string">"Sean"</span>)
+<span class="keyword">var</span> 👨‍🌾 = 👤(name: <span class="string">"seán"</span>)
+
+<span class="keyword">if</span> 👨‍💻.comparisonName == 👨‍🌾.comparisonName {
+    <span class="call">print</span>(<span class="string">"👨‍💻 and 👨‍🌾 have the same name."</span>) <span class="comment">// ✅</span>
+}
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji6</guid><title>Indirect Cases</title><description>SwiftMoji Entry #6</description><link>http://www.grantemerson.co/blog/SwiftMoji6</link><pubDate>Fri, 6 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Indirect Cases</h1><span class="article-date">Published on Dec 6, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Indirect Cases — SwiftMoji Entry #6</p>
+</div><p>In Swift, enumerations (or <em>enums</em> for short) are data structures that define a group of related values called <em>cases</em>. Although not required, each <em>case</em> in an <em>enum</em> can either provide a raw value (with “<em>=</em>”) or associated value (with “<em>()</em>”). The latter is interesting because it adds a layer of customizability and depth to a <em>case</em>. For example, an error <em>enum</em> might have a <em>String</em> as the associated value for its <em>cases</em> in order to handle corresponding descriptions. Additionally, with the <em>indirect</em> keyword, an <em>enum’s</em> cases can have recursive associated values that are of the same type as the enclosing <em>enum</em>. In the following code example, there is a <em>Folder</em> enum with two <em>cases</em>, one for subfolders and the other for documents. In the subfolder <em>case</em>, the associated value is a tuple containing its name and an <em>Array</em> of <em>Folders</em> it contains. The fact that a <em>Folder</em> can contain <em>Folders</em> creates a recursive relationship and therefore, requires the <em>indirect</em> keyword.</p><pre><code><span class="keyword">indirect enum</span> Folder {
+    <span class="keyword">case</span> 📁(label: <span class="type">String</span>, contents: [<span class="type">Folder</span>])
+    <span class="keyword">case</span> 📄(<span class="type">String</span>)
+}
+
+<span class="keyword">let</span> models = <span class="type">Folder</span>.📁(label: <span class="string">"Models"</span>, contents: [.📄(<span class="string">"Experience.swift"</span>)])
+<span class="keyword">let</span> views = <span class="type">Folder</span>.📁(label: <span class="string">"Views"</span>, contents: [.📄(<span class="string">"MapperView.swift"</span>)])
+<span class="keyword">let</span> controllers = <span class="type">Folder</span>.📁(label: <span class="string">"Controllers"</span>, contents: [.📄(<span class="string">"MainViewController.swift"</span>)])
+<span class="keyword">let</span> xcodeProject = <span class="type">Folder</span>.📁(label: <span class="string">"Business App"</span>, contents: [models, views, controllers])
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji5</guid><title>No Sweat for OptionSet</title><description>SwiftMoji Entry #5</description><link>http://www.grantemerson.co/blog/SwiftMoji5</link><pubDate>Thu, 5 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>No Sweat for OptionSet</h1><span class="article-date">Published on Dec 5, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">No Sweat for OptionSet — SwiftMoji Entry #5</p>
+</div><p><em>OptionSet</em> is a protocol in Swift that provides a way to efficiently combine a group of related values into a set using an underlying bitmask — a group of bits (0s and 1s) that can be programmatically switched on and off using bitwise operations. <em>OptionSet</em> conforms to <em>SetAlgebra</em> and can therefore be declared with the <em>Array Literal</em> syntax (e.g. <em>[.x, .y]</em>). A struct can conform to <em>OptionSet</em> by providing a <em>rawValue</em> property along with a group of static constant instances of the conforming type. The bitwise left shift operator (<em>&lt;&lt;</em>) is used to assign each instance to a unique <em>rawValue</em> with a single bit. For example, 1 &lt;&lt; 4 is 0b10000 in binary and has only one bit-value turned on. The usage of single bits for expressing membership makes storing <em>OptionSets</em> very efficient. For example, a set of 🎒<em>Items</em> containing a 💻, 📓, and 📷 would be represented as a single binary integer 0b00111 in memory. <em>OptionSets</em> also work with common set operations such as <em>union(_:)</em> which allows for static constant sets to be melded together.</p><pre><code><span class="keyword">struct</span> 🎒<span class="type">Items</span>: <span class="type">OptionSet</span> {
+    <span class="keyword">let</span> rawValue: <span class="type">Int</span>
+    
+    <span class="keyword">static let</span> 💻 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">0</span>)
+    <span class="keyword">static let</span> 📓 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">1</span>)
+    <span class="keyword">static let</span> 📷 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">2</span>)
+    <span class="keyword">static let</span> 🔦 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">3</span>)
+    <span class="keyword">static let</span> 🍎 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">4</span>)
+    
+    <span class="keyword">static let</span> school: 🎒<span class="type">Items</span> = [.💻, .📓]
+    <span class="keyword">static let</span> hike: 🎒<span class="type">Items</span> = [.🔦, .🍎]
+    <span class="keyword">static let</span> all: 🎒<span class="type">Items</span> = [.💻, .📓, .📷, .🔦, .🍎]
+}
+
+<span class="keyword">struct</span> 🎒 {
+    <span class="keyword">enum</span> Color {
+        <span class="keyword">case</span> black, white, red
+    }
+    
+    <span class="keyword">var</span> color: <span class="type">Color</span>
+    <span class="keyword">var</span> items: 🎒<span class="type">Items</span>
+}
+
+<span class="keyword">var</span> fieldTrip🎒 = 🎒(color: .<span class="dotAccess">red</span>, items: 🎒<span class="type">Items</span>.<span class="property">school</span>.<span class="call">union</span>(.<span class="dotAccess">hike</span>))
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji4</guid><title>Let’s Build an Invisible Wall</title><description>SwiftMoji Entry #4</description><link>http://www.grantemerson.co/blog/SwiftMoji4</link><pubDate>Wed, 4 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Let’s Build an Invisible Wall</h1><span class="article-date">Published on Dec 4, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Let’s Build an Invisible Wall — SwiftMoji Entry #4</p>
+</div><p>Sometimes it is convenient to divide a <em>Collection</em> based on some sort of condition. Luckily, Swift provides the <em>partition(by:)</em> method on <em>Collections</em> to do just that. The <em>by</em> argument to be passed in as the <em>belongsInSecondPartition</em> parameter is a closure with an <em>Element</em> input type and <em>Bool</em> return type. This closure is used to re-order the collection into two halves: one which doesn’t match the specification and subsequently, one that matches. Interestingly, the <em>partition(by:)</em> method has a return type of <em>Int</em>. This number represents the index of the second partition. If the second partition is empty the <em>endIndex</em> of the collection is returned. This method is utilized in the code example below to reorganize a user’s shopping cart based on the <em>isNecessary</em> property of the <em>Item</em> <em>Elements</em>. This allows the user to purchase all the <em>Items</em> that they can afford without neglecting any of the necessities.</p><pre><code><span class="keyword">struct</span> Item {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> isNecessary: <span class="type">Bool</span>
+    <span class="keyword">let</span> price: <span class="type">Int</span>
+}
+
+<span class="keyword">var</span> 🛒 = [
+    <span class="type">Item</span>(name: <span class="string">"📱"</span>, isNecessary: <span class="keyword">false</span>, price: <span class="number">600</span>),
+    <span class="type">Item</span>(name: <span class="string">"🧻"</span>, isNecessary: <span class="keyword">true</span>, price: <span class="number">10</span>),
+    <span class="type">Item</span>(name: <span class="string">"🍎"</span>, isNecessary: <span class="keyword">true</span>, price: <span class="number">5</span>),
+    <span class="type">Item</span>(name: <span class="string">"🎮"</span>, isNecessary: <span class="keyword">false</span>, price: <span class="number">50</span>),
+    <span class="type">Item</span>(name: <span class="string">"💡"</span>, isNecessary: <span class="keyword">true</span>, price: <span class="number">25</span>),
+    <span class="type">Item</span>(name: <span class="string">"🍪"</span>, isNecessary: <span class="keyword">false</span>, price: <span class="number">7</span>)
+]
+
+🛒.<span class="call">partition</span> { !$0.<span class="property">isNecessary</span> }
+
+<span class="keyword">var</span> money = <span class="number">300</span>
+
+<span class="keyword">while</span> !🛒.isEmpty &amp;&amp; (money - 🛒[<span class="number">0</span>].price) &gt;= <span class="number">0</span> {
+    <span class="keyword">let</span> item = 🛒.<span class="call">removeFirst</span>()
+    money -= item.<span class="property">price</span>
+    <span class="call">print</span>(<span class="string">"Bought:</span> \(item.<span class="property">name</span>) <span class="string">for $</span>\(item.<span class="property">price</span>)<span class="string">. Total: $</span>\(money)<span class="string">"</span>)
+}
+
+<span class="comment">// Bought: 💡 for $25. Total: $275
+// Bought: 🧻 for $10. Total: $265
+// Bought: 🍎 for $5. Total: $260
+// Bought: 🎮 for $50. Total: $210</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji3</guid><title>The Power of Reduce</title><description>SwiftMoji Entry #3</description><link>http://www.grantemerson.co/blog/SwiftMoji3</link><pubDate>Tue, 3 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>The Power of Reduce</h1><span class="article-date">Published on Dec 3, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">The Power of Reduce — SwiftMoji Entry #3</p>
+</div><p>In Swift, higher-order functions (functions which take another function as an argument) can drastically improve readability and shrink code size. In the following example, the <em>reduce(into:_:)</em> method on <em>Array</em> is used to combine elements into a <em>Dictionary</em> which maps each unique element to its corresponding count. More specifically, an <em>Array</em> of animal emojis is converted into a <em>Dictionary</em> by mapping each animal to its count. The <em>initialResult</em> of this operation is just an empty Dictionary ([:]). The <em>animalCounts</em> parameter in the closure is inferred to be of the type <em>[String: Int]</em> based on the surrounding context. Additionally, <em>animalCounts</em> is marked as <em>inout</em> because it is mutated in the closure. Next, the <em>Dictionary</em> of animal counts is converted into an <em>Array</em> of <em>Strings</em> describing the number of scientific groupings commonly formed. The <em>initialResult</em> of this reduce is an empty <em>Array</em> (<em>[]</em>). In each iteration of the reduce, a new key-value pair from the <em>Dictionary</em> of <em>animalCounts</em> is generated. The key is then used to look-up the correct <em>AnimalGroup</em> classification which provides the details necessary to calculate the number of groups present.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">typealias</span> AnimalGroup = (name: <span class="type">String</span>, size: <span class="type">Int</span>)
+
+<span class="keyword">let</span> animalGroups: [<span class="type">String</span>: <span class="type">AnimalGroup</span>] = [
+    <span class="string">"🐬"</span>: (<span class="string">"pod"</span>, <span class="number">12</span>),
+    <span class="string">"🐺"</span>: (<span class="string">"pack"</span>, <span class="number">6</span>),
+    <span class="string">"🦒"</span>: (<span class="string">"tower"</span>, <span class="number">10</span>)
+]
+
+<span class="keyword">let</span> animals = [
+    <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>,
+    <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>,
+    <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>,
+    <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>,
+    <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>,
+    <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>
+]
+
+<span class="keyword">let</span> groupedAnimals = animals
+    .<span class="call">reduce</span>(into: [:]) { animalCounts, animal <span class="keyword">in</span>
+        animalCounts[animal, default: <span class="number">0</span>] += <span class="number">1</span>
+    }
+    .<span class="call">reduce</span>(into: []) { groups, animalCount <span class="keyword">in
+        let</span> animal = animalCount.<span class="property">key</span>
+        <span class="keyword">let</span> amount = animalCount.<span class="property">value</span>
+        <span class="keyword">let</span> groupSize = animalGroups[animal]!.size
+        <span class="keyword">let</span> groupName = animalGroups[animal]!.name
+        <span class="keyword">let</span> amountOfGroups = <span class="type">Int</span>((<span class="type">Double</span>(amount) / <span class="type">Double</span>(groupSize)).<span class="call">rounded</span>())
+        groups.<span class="call">append</span>(<span class="string">"</span>\(amountOfGroups) \(groupName)\(amountOfGroups &gt; <span class="number">1</span> ? <span class="string">"s"</span> : <span class="string">""</span>) <span class="string">of</span> \(animal)<span class="string">"</span>)
+    }
+
+<span class="comment">// ["2 packs of 🐺", "1 tower of 🦒", "1 pod of 🐬"]</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji2</guid><title>Zip-A-Dee-Doo-Dah Zip-An-Array</title><description>SwiftMoji Entry #2</description><link>http://www.grantemerson.co/blog/SwiftMoji2</link><pubDate>Mon, 2 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Zip-A-Dee-Doo-Dah Zip-An-Array</h1><span class="article-date">Published on Dec 2, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Zip-A-Dee-Doo-Dah Zip-An-Array — SwiftMoji Entry #2</p>
+</div><p>Sometimes, two arrays in a program have closely related elements. Accessing these arrays sequentially with the same index throughout a codebase can become a bit verbose. The logical approach to combine the elements from both arrays is to create an array of tuples. In Swift, two <em>Sequences</em> can be combined in this fashion using the <em>zip(_:_:)</em> method. <em>Zip</em> returns a <em>Zip2Sequence</em> instance where each pair corresponds to elements at the same index in the original sequences. The <em>zip(_:_:)</em> method will create the same amount of pairs as the shortest input sequence. Additionally, an <em>Array</em> must be initialized with the contents of a <em>Zip2Sequence</em> to get subscripting. The resulting tuples have default numerical element names that are a bit difficult to work with. In the following code example, this issue is solved by creating a <em>Meal</em> tuple type with element names: <em>drink</em> and <em>food</em>. The result of zipping the drinks and foods <em>String Arrays</em> is then cast to be an <em>Array</em> of the <em>Meal</em> type.</p><pre><code><span class="keyword">typealias</span> Meal = (drink: <span class="type">String</span>, food: <span class="type">String</span>)
+
+<span class="keyword">let</span> drinks = [<span class="string">"🥛"</span>, <span class="string">"☕️"</span>, <span class="string">"🥤"</span>, <span class="string">"🍺"</span>, <span class="string">"🍷"</span>, <span class="string">"🍹"</span>]
+<span class="keyword">let</span> foods = [<span class="string">"🍪"</span>, <span class="string">"🥓🍳"</span>, <span class="string">"🍔🍟"</span>, <span class="string">"🥜"</span>, <span class="string">"🍝"</span>, <span class="string">"🥗"</span>]
+<span class="keyword">let</span> meals = <span class="type">Array</span>(<span class="call">zip</span>(drinks, foods)) <span class="keyword">as</span> [<span class="type">Meal</span>]
+
+<span class="keyword">let</span> dinner = meals[<span class="number">2</span>]
+<span class="call">print</span>(<span class="string">"Tonight, we will have</span> \(dinner.<span class="property">drink</span>) <span class="string">and</span> \(dinner.<span class="property">food</span>) <span class="string">for dinner."</span>)
+<span class="comment">// Tonight, we will have 🥤 and 🍔🍟 for dinner.</span>
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/SwiftMoji1</guid><title>Keying Into Tuples</title><description>SwiftMoji Entry #1</description><link>http://www.grantemerson.co/blog/SwiftMoji1</link><pubDate>Sun, 1 Dec 2019 12:00:00 -0500</pubDate><content:encoded><![CDATA[<h1>Keying Into Tuples</h1><span class="article-date">Published on Dec 1, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Keying Into Tuples — SwiftMoji Entry #1</p>
+</div><p>In the release of Swift 5.1, <em>KeyPaths</em> gained support for accessing the elements within a tuple. In the code example below, an array of <em>WritableKeyPaths</em> as passed into a <em>remove(:)</em> function on the <em>HotDog</em> struct. Due to the inherent relationship between chili, cheese, and tomatoes as condiments, they are grouped in a tuple. This avoids the hassle of nesting an additional struct within the <em>HotDog</em> type. Previous to Swift 5.1, this would prevent the users of the <em>remove(:)</em> function from accessing all the ingredients within <em>HotDog</em>. However, now, with recent enhancements, a <em>Person</em> is no longer limited to the ingredients they wish to leave off their <em>HotDog</em>.</p><pre><code><span class="keyword">struct</span> HotDog {
+    <span class="keyword">var</span> bun: <span class="type">String</span>?
+    <span class="keyword">var</span> meat: <span class="type">String</span>?
+    <span class="keyword">var</span> condiments: (chili: <span class="type">String</span>?, cheese: <span class="type">String</span>?, tomatoes: <span class="type">String</span>?)
+    
+    <span class="keyword">var</span> ingredients: <span class="type">String</span> {
+        [bun, meat, condiments.<span class="property">chili</span>, condiments.<span class="property">cheese</span>, condiments.<span class="property">tomatoes</span>]
+            .<span class="call">compactMap</span> { $0 }
+            .<span class="call">joined</span>(separator: <span class="string">", "</span>)
+    }
+    
+    <span class="keyword">mutating func</span> remove(<span class="keyword">_</span> ingredients: <span class="type">Set</span>&lt;<span class="type">WritableKeyPath</span>&lt;<span class="type">Self</span>, <span class="type">String</span>?&gt;&gt;) {
+        ingredients.<span class="call">forEach</span> { <span class="keyword">self</span>[keyPath: $0] = <span class="keyword">nil</span> }
+    }
+}
+
+<span class="keyword">struct</span> Person {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> dislikedIngredients: <span class="type">Set</span>&lt;<span class="type">WritableKeyPath</span>&lt;<span class="type">HotDog</span>, <span class="type">String</span>?&gt;&gt;
+}
+
+<span class="keyword">var</span> 🌭 = <span class="type">HotDog</span>(bun: <span class="string">"🥖"</span>, meat: <span class="string">"🦃"</span>,
+                condiments: (chili: <span class="string">"🌶"</span>, cheese: <span class="string">"🧀"</span>, tomatoes: <span class="string">"🍅"</span>))
+
+<span class="keyword">let</span> 👨‍🍳 = <span class="type">Person</span>(
+    name: <span class="string">"Timothy"</span>,
+    dislikedIngredients: [
+        \<span class="type">HotDog</span>.<span class="property">condiments</span>.<span class="property">chili</span>,
+        \<span class="type">HotDog</span>.<span class="property">condiments</span>.<span class="property">tomatoes</span>
+    ]
+)
+
+🌭.<span class="call">remove</span>(👨‍🍳.dislikedIngredients)
+<span class="call">print</span>(<span class="string">"👨‍🍳's 🌭 has:</span> \(🌭.ingredients)<span class="string">"</span>)
+</code></pre>]]></content:encoded></item><item><guid isPermaLink="true">http://www.grantemerson.co/blog/BuildingASynthesizerInSwift</guid><title>Building a Synthesizer in Swift</title><description>Making audio waveforms with AVAudioEngine</description><link>http://www.grantemerson.co/blog/BuildingASynthesizerInSwift</link><pubDate>Thu, 25 Jul 2019 12:00:00 -0400</pubDate><content:encoded><![CDATA[<h1>Building a Synthesizer in Swift</h1><span class="article-date">Published on Jul 25, 2019</span><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/BuildingASynthesizerInSwift.jpeg">
+    <p class="article-image-description">A random synthesizer...</p>
+</div><p>During WWDC ’19, Apple quietly announced some updates to the AVAudioEngine with a short video.</p><p>Included in these updates were two brand new AVAudioNodes called AVAudioSinkNode and AVAudioSourceNode. In this piece, we’ll be focusing on how the AVAudioSourceNode can be used to build a musical synthesizer for iOS.</p><p>In Apple’s slideshow they collectively defined the two new nodes as a wrapper for “<em>a user-defined block that allows apps to send or receive audio from AVAudioEngine.</em>” In our case, we’ll be sending audio data to the output of the audio signal processing network. The AVAudioSourceNode provides a trailing closure expression which takes in four parameters. We will only need the last two, which are of type AVAudioFrameCount and UnsafeMutablePointer (which points to a list of audio buffers). The closure’s return type is OSStatus, which will be used to indicate whether or not the DSP (Digital Signal Processing) code for our synthesizer’s oscillator is running smoothly.</p><p>The AVAudioSourceNode can be used in realtime and manual rendering mode, which means that it can be used to write audio straight to an audio file or, in our case, create sounds in a live context.</p><p>Lastly, Apple gives us an extremely important warning: the code you write in the AVAudioSourceNode’s block <em>must be realtime compliant</em>. This means that while on the audio thread, no objects should be initialized and no memory should be allocated. The realtime aspect of audio programming is especially important because lag in audio code can result in buffer under or overflows, which create clicks and pops. These clicks are devastating in a live performance as not only could they damage a user’s hearing, they could also damage the user’s speakers.</p><p>Now, with the introduction out of the way, let’s get building our synthesizer!</p><p>Here's a quick video of the app we will be building:</p><iframe width=420 height=236 style="padding-top:10px; padding-bottom:10px; display: block; margin-left: auto; margin-right: auto;"src="https://www.youtube.com/embed/1ouhwoUzhGU" frameborder="0" allowfullscreen></iframe><p>To follow along with this tutorial you’ll need Xcode 11 or later. If you want to run your finished application on a device instead of a simulator, that device needs to have iOS 13 or later installed.</p><p>Once your Xcode is up to date, open it and navigate to File -&gt; New -&gt; Project. Select iOS and Single View Application. Set the Product Name to “Swift Synth” or whatever name you like. Click Next, navigate to the directory you want to save your application in, and click Create.</p><p>Let’s take care of some maintenance. For this tutorial, I’ll be laying out the UI programmatically. Feel free to use storyboards if you like — it should be easy to follow along either way.</p><p>The project should have opened up to the project settings. If you don’t want to use Storyboards, scroll down to the Deployment Info tab in General and clear the text field to the right of Main Interface. Next, locate the Main.storyboard file in the Project Navigator and delete it. Finally, we need to enter the Info.plist file and delete the field which pertains to the Storyboard Name.</p><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/BuildingASynthesizerInSwiftBlogTutorialImage1.jpeg">
+    <p class="article-image-description">Follow these steps to clear the Main Interface.</p>
+</div><div>
+    <img class="article-image" src="http://www.grantemerson.co//ArticleImages/BuildingASynthesizerInSwiftBlogTutorialImage2.jpeg">
+    <p class="article-image-description">Click the minus button where the arrow is pointing to remove the indicated field. You will have to drill down through the structure to reach the specified field.</p>
+</div><p>Click the minus button where the arrow is pointing to remove the indicated field. You will have to drill down through the structure to reach the specified field.</p><p>One of the updates in iOS 13 and Xcode 11 was the introduction of the SceneDelegate.swift. This manages various <code>UIScene</code>s in your app and specifically interacts with the top-level <code>UIWindowScene</code> to manage multiple windows.</p><p>To set the root view controller at configuration time, we now use the <code>scene willConnectTo session: UISceneSession</code> function. First, we should attempt to cast the scene to a <code>UIWindowScene</code>. If that succeeds, we can continue by initializing the <code>window</code> property of the <code>SceneDelegate</code>.</p><p>We will pass the <code>bounds</code> of windowScene’s <code>coordinateSpace</code> into the initializer which includes one frame. Next, set the window’s <code>windowScene</code> property to the <code>windowScene</code> constant we created earlier. Set the <code>rootViewController</code> of the window to <code>ViewController</code>.</p><p>Lastly, make sure to call the <code>makeKeyAndVisible</code> method on window to present the UI. To ensure everything is working, build and run the application. You should see a blank screen and no errors in the console.</p><p>Now, open ViewController.swift. For the sake of clarity, command click the class name and choose the rename option from the dropdown. Type SynthViewController in the text box to rename the file and class. The first thing I like to do when programming a new view controller is to stub it out with mark comments:</p><p>It’ll be easier to create the audio part of the app first. Create a new Swift file (File -&gt; New -&gt; File) and call it Synth. Start by importing <code>AVFoundation</code> and <code>Foundation</code>:</p><pre><code><span class="keyword">import</span> AVFoundation
+<span class="keyword">import</span> Foundation
+</code></pre><p>Then create a class called Synth and stub it out with the same mark comments. You’ll also need to create an initializer, although we’ll be modifying its parameters later:</p><p>We’ll be making Synth a <code>singleton</code> by adding a static shared instance property to its definition. This will allow us to access it from any view controller with ease:</p><p>Now we’ll add a few properties pertaining to the actual audio of our synthesizer. The first will be a <code>volume</code> property which will allow us to simulate turning off and on the synthesizer. The most important variable in our synthesizer is the engine, which is an AVAudioEngine. The AVAudioEngine will host the sound making AVAudioNodes that we add to our signal chain. The last three are timing variables, which we will discuss in more detail later.</p><p>To initialize these properties, head to the initializer and start by initializing the <code>audioEngine</code>. Next, create two constants that reference the <code>mainMixerNode</code> and <code>outputNode</code> of the <code>audioEngine</code>.</p><p>The <code>mainMixerNode</code> is a singleton that is connected to the <code>outputNode</code> on the first mention. It acts as an intermediary between the source nodes and the <code>outputNode</code>.</p><p>Then create a <code>format</code> constant by calling the <code>inputFormat</code> function for bus 0 on the <code>outputNode</code>. The format will provide us with the default audio settings for the device we are working with. For instance, we can set our <code>sampleRate</code> property by accessing the format’s <code>sampleRate</code> property. If the concept of sample rate is new to you, I suggest you take a quick detour and check out The Audio Programmer’s <a href="https://www.youtube.com/watch?v=PLuBamvtBZU">video</a> about the fundamentals of audio software on youtube.</p><p>Next, set the <code>deltaTime</code> float to one over the <code>sampleRate</code>. Delta time is duration each sample is held for. For instance, if the <code>sampleRate</code> was 44,100 Hz, you would take one second and divide it into 44,100 to represent each of the samples.</p><p>We’ve now reached the point where we can start diving into <code>AVAudioSourceNode</code>.</p><p>Start by defining a <code>typealias</code> called <code>Signal</code> outside the <code>Synth</code> class definition. <code>Signal</code> will be a closure type which takes in one float to represent time and returns one float for the audio sample:</p><pre><code><span class="keyword">typealias</span> Signal = (<span class="type">Float</span>) -&gt; (<span class="type">Float</span>)
+</code></pre><p>Now, inside <code>Synth</code> add a variable called <code>signal</code> of type <code>Signal</code>.</p><p>Next, add a <code>sourceNode</code> variable of type <code>AVAudioSourceNode</code>. Make sure to <code>lazily</code> initialize <code>sourceNode</code> as we will be referencing <code>self</code> within its trailing closure. You can hit enter to auto-complete a basic closure structure. For the two parameters, type an underscore as they are not necessary.</p><p>The last two should be named <code>frameCount</code> and <code>audioBufferList</code>. Within the block, start by defining a pointer called <code>ablPointer</code> as a <code>UnsafeMutableAudioBufferListPointer</code> with <code>audioBufferList</code> in the initializer. The <code>audioBufferList</code> holds an array of audio buffer structures that we will fill with our custom waveforms. Buffers are used in audio to give applications more than 1/44,100 of a second to generate samples within the render block. Audio buffers generally contain between 128 and 1024 samples.</p><p>Next, we create a for-loop to iterate through index values between 0 and our <code>frameCount</code> variable.</p><p>In audio, frames are sets of samples that occurred at the same time. In stereo audio, each frame contains two samples–one for the left ear and another for the right ear. In our case, we’ll be setting both samples to the same value because our synth is monophonic.</p><p>Inside of the for-loop, we will obtain the <code>sampleVal</code> by calling our signal closure with Synth’s time property, then advance time with <code>deltaTime</code>.</p><p><code>ABLPointer</code> points to an array, which means we can treat it as such and iterate through its contents within a nested for-loop.</p><p>For each <code>buffer</code> element, we must cast it to a float pointer. We can then index the buffer at the current frame and set it the <code>sampleVal</code> found earlier.</p><p>Lastly, don’t forget to return <code>noErr</code> if everything succeeds.</p><p>We can now return to the initializer and finish setting up Synth.</p><p>Start by adding a parameter to the initializer called <code>signal</code> of type escaping <code>Signal</code>. Then, inside the initializer, set <code>self.signal</code> to the <code>signal</code> argument.</p><p>Create an <code>inputFormat</code> of type <code>AVAudioFormat</code> — filling in the arguments with format’s properties and limiting the channels to one. Then, attach <code>sourceNode</code> to the <code>audioEngine</code> to introduce it the audio graph.</p><p>We can now connect the <code>sourceNode</code> to the <code>mainMixer</code> using <code>inputFormat</code>.</p><p>The last step is to connect the <code>mainMixer</code> to the <code>outputNode</code>. You can set <code>mainMixer</code>’s <code>outputVolume</code> to a starting value of 0 as it shouldn’t make sound without a user first requesting to do so.</p><p>Finally, we need to call the <code>start</code> method on the <code>audioEngine</code> to initialize the hardware I/O nodes. This function can throw an error so you need to proceed the line with the try keyword and wrap the entire statement in a do-catch block.</p><p>Since we have encapsulated all the properties of Synth fairly well, we will need one public accessor method to set the signal of Synth.</p><pre><code><span class="comment">// MARK: Public Functions</span>
+<span class="keyword">public func</span> setWaveformTo(<span class="keyword">_</span> signal: <span class="keyword">@escaping</span> <span class="type">Signal</span>) { 
+    <span class="keyword">self</span>.<span class="property">signal</span> = signal
+}
+</code></pre><p>To start producing audio, we need to make a set of closure expressions which conform to the <code>Signal</code> type. Let’s start by creating a swift file called <code>Oscillator</code>. Feel free to move the typealias for <code>Signal</code> over to this file as it should fit in nicely.</p><p>Start by creating a struct called <code>Oscillator</code>. Add two static Float variables to <code>Oscillator</code> called amplitude and frequency, giving them initial values of 1 and 440 (Concert A) respectively.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">struct</span> Oscillator { 
+    <span class="keyword">static var</span> amplitude: <span class="type">Float</span> = <span class="number">1</span> 
+    <span class="keyword">static var</span> frequency: <span class="type">Float</span> = <span class="number">440</span>
+}
+</code></pre><p>Let’s start by building the sine oscillator, as it is the simplest.</p><p>Inside <code>Oscillator</code>, create a constant static closure expression called <code>sine</code> with a Float parameter for time and a return type of Float for the samples it will output. Within the closure block, calculate the sine of 2 * pi * <code>Oscillator.frequency</code> * <code>time</code>. Then multiply the output by <code>Oscillator.amplitude</code> and return the result.</p><p>If you took trigonometry you’ll know that sine is a periodic function of time with a period equal to (2 * pi) over b, where b is the factor that time or x is being multiplied by before being passed into the function. In our case, b is equal to (2 * pi * <code>Oscillator.frequency</code>). That means the period of our sine wave is (1 / <code>Oscillator.frequency</code>). This makes perfect sense because our frequency is in Hz or cycles per second. If there are 440 cycles per second in a sine wave, each cycle is allotted 1 / 440th of a second.</p><p>The next oscillator we’ll build is the triangle wave. This will also be a constant static closure expression, with the same parameters.</p><p>For a triangle wave, we separate the wave into three parts: the initial incline, the turning point, and the latter incline. We first calculate the period of the triangle wave by dividing one by <code>Oscillator.frequency</code>. However, because there is no triangle function built into the standard library, we have to calculate where the current sample is located relative to the current cycle.</p><p>We can find the <code>currentTime</code> constant by taking the floating point remainder of the total <code>time</code> elapsed divided by the <code>period</code>. For example, if <code>time</code> currently equals 17.5 and the <code>period</code> is 5, the remainder of 17.5 / 5 will be 2.5.</p><p>With this information, we can create a <code>value</code> constant that holds the progress percentage of the current cycle. This percentage is found by dividing the <code>currentTime</code> (2.5) by the <code>period</code> (5). This shows us that we are exactly 50% of the way through the current waveform.</p><p>We can use the <code>value</code> constant to calculate the <code>result</code> sample value. If <code>value</code> is less than 0.25, we are in the first fourth of the triangle and are inclining from 0 to 1. For that reason, we set <code>result</code> equal to 4 times the current <code>value</code>. If <code>value</code> is greater than or equal to 0.25 and less than 0.75, the waveform dips from 1 to -1. <code>Result</code> will equal value multiplied by 4 and subtracted from two. We know from the last if-statement that (value * 4) ended at 1, therefore we will be starting at (2–1=1) which is the peak. The last else-statement works in a similar way to the previous two. The last step is to convert <code>result</code> back into a <code>Float</code> and multiply <code>Oscillator.amplitude</code>.</p><p>The next two oscillators we will build are the sawtooth and square. Following the same convention as before, these will both be static closure expressions.</p><p>We will also reuse the same mathematics applied in the triangle wave to find the location of each sample in the sawtooth and square waves. In the sawtooth oscillator, the percentage value will simply be multiplied by 2 (0–2). The final <code>result</code> will be that value minus 1 (-1–1) and multiplied by <code>Oscillator.amplitude</code>.</p><p>In the square wave, if value is less than 0.5 the closure returns the negative of <code>Oscillator.amplitude</code>. Otherwise, it simply returns <code>Oscillator.amplitude</code>. This limitation of only 2 states creates abrupt, high energy transitions which adds a series of upper odd harmonics.</p><p>Last but not least, we will create a <code>whiteNoise</code> oscillator. This is by far the easiest to program and wrap one’s mind around, as it is simply random <code>Float</code> sample values.</p><p>With the release of Swift 4.2, primitive numerical types such as <code>Float</code> got a new static method called random(in:). With this new feature we can simply pass in a closed range (…) from -1 to 1 and multiply it by <code>Oscillator.amplitude</code> to obtain the sample.</p><p>Awesome, we did it!</p><p>We now have a 5-waveform oscillator built entirely with Swift. Let’s head back to <code>SynthViewController</code> so that we can give it a proper user interface.</p><p>For starters, we’ll need a <code>UISegmentedControl</code> to switch between our waveforms. The square icons I used can be found <a href="https://drive.google.com/drive/folders/1Po35zw-zJwqVwSuzSNpqbc4xBha_19wv?usp=sharing">here</a>. I did not create these icons, so please don’t use them commercially without first purchasing them from <a href="https://thenounproject.com/marcogaltarossa/">this artists page</a> on TheNounProject.</p><p>The other component we will add is UILabel to display the frequency and amplitude of the current waveform being produced. We’ll initialize these private variables lazily so that we can access self within the closure expression as seen below:</p><p>Then we can create two new private functions called <code>setUpView</code> and <code>setUpSubviews</code>. They’ll both be called at the start of our app’s lifecycle in the <code>viewDidLoad</code> function.</p><p>Let’s implement the <code>updateOscillatorWaveform</code> function that we added as a selector to our <code>waveformSelectorSegmentedControl</code>.</p><p>First, to interface between the <code>UISegmentedControl</code>’s index values and the oscillator type, create an enum of type <code>Int</code> called <code>Waveform</code> somewhere within your Oscillator.swift file.</p><p>Then add the following cases: <code>sine</code>, <code>triangle</code>, <code>sawtooth</code>, <code>square</code>, and <code>whiteNoise</code>. They should be in <em>exactly that order,</em> as long as you copied the <code>images</code> array exactly the way I wrote it within the declaration of <code>waveformSelectorSegmentedControl</code>.</p><pre><code><span class="keyword">enum</span> Waveform: <span class="type">Int</span> { <span class="keyword">case</span> sine, triangle, sawtooth, square, whiteNoise }
+<span class="keyword">struct</span> Oscillator {  
+...
+</code></pre><p>The actual implementation of <code>updateOscillatorWaveform</code> will involve calling the <code>rawValue</code> initializer on <code>Waveform</code> with <code>waveformSelectorSegmentedControl</code>’s <code>selectedSegmentIndex</code> property.</p><p>Then, a switch statement can be defined with the resulting <code>waveform</code>. For each of the five cases, call <code>Synth.shared.setWaveformTo</code> with the respective <code>Oscillator</code> waveform.</p><p>We should also quickly implement a <code>setPlaybackStateTo(state:)</code> function to turn our synth on and off. This function will simply take in a boolean called <code>state</code> and set <code>Synth.shared.volume</code> to 0.5 or 0 using a ternary operator.</p><p>Finally, we use the touch related methods already included in <code>UIViewController</code> to allow the user to manipulate the oscillator’s pitch.</p><p>That’s it! Build it and run the app on an iOS 13 device or simulator to test it.</p><p>I hope you had a great time learning how to build synths in Swift. If you have any bugs or if I made any mistakes, please feel free to leave a comment below.</p><p>If you want to download the final Xcode project, you can find it on Github <a href="https://github.com/GrantJEmerson/SwiftSynth">here</a>. Also, a lot of the code I used in this tutorial was found in Apple’s sample project <a href="https://developer.apple.com/documentation/avfoundation/audio_track_engineering/building_a_signal_generator">here</a>. If you want to learn more about what’s new in AVAudioEngine, you can find the WWDC video <a href="https://developer.apple.com/videos/play/wwdc2019/510/">here</a>.</p><p>Until next time!</p>]]></content:encoded></item></channel></rss>

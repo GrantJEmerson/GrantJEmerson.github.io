@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Grant Emerson"/><link rel="canonical" href="http://www.grantemerson.co/blog/SwiftMoji3"/><meta name="twitter:url" content="http://www.grantemerson.co/blog/SwiftMoji3"/><meta name="og:url" content="http://www.grantemerson.co/blog/SwiftMoji3"/><title>The Power of Reduce | Grant Emerson</title><meta name="twitter:title" content="The Power of Reduce | Grant Emerson"/><meta name="og:title" content="The Power of Reduce | Grant Emerson"/><meta name="description" content="SwiftMoji Entry #3"/><meta name="twitter:description" content="SwiftMoji Entry #3"/><meta name="og:description" content="SwiftMoji Entry #3"/><meta name="twitter:card" content="summary_large_image"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/favicon.ico" type="icon"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Grant Emerson"/><meta name="twitter:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/><meta name="og:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Grant Emerson</a><nav><ul><li><a href="/about">About Me</a></li><li><a class="selected" href="/blog">Blog</a></li><li><a href="/projects">Projects</a></li><li><a href="mailto:grant@821apps.com">Contact</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>The Power of Reduce</h1><span class="article-date">Published on Dec 3, 2019</span><div>
+    <img class="article-image" src="/ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">The Power of Reduce — SwiftMoji Entry #3</p>
+</div><p>In Swift, higher-order functions (functions which take another function as an argument) can drastically improve readability and shrink code size. In the following example, the <em>reduce(into:_:)</em> method on <em>Array</em> is used to combine elements into a <em>Dictionary</em> which maps each unique element to its corresponding count. More specifically, an <em>Array</em> of animal emojis is converted into a <em>Dictionary</em> by mapping each animal to its count. The <em>initialResult</em> of this operation is just an empty Dictionary ([:]). The <em>animalCounts</em> parameter in the closure is inferred to be of the type <em>[String: Int]</em> based on the surrounding context. Additionally, <em>animalCounts</em> is marked as <em>inout</em> because it is mutated in the closure. Next, the <em>Dictionary</em> of animal counts is converted into an <em>Array</em> of <em>Strings</em> describing the number of scientific groupings commonly formed. The <em>initialResult</em> of this reduce is an empty <em>Array</em> (<em>[]</em>). In each iteration of the reduce, a new key-value pair from the <em>Dictionary</em> of <em>animalCounts</em> is generated. The key is then used to look-up the correct <em>AnimalGroup</em> classification which provides the details necessary to calculate the number of groups present.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">typealias</span> AnimalGroup = (name: <span class="type">String</span>, size: <span class="type">Int</span>)
+
+<span class="keyword">let</span> animalGroups: [<span class="type">String</span>: <span class="type">AnimalGroup</span>] = [
+    <span class="string">"🐬"</span>: (<span class="string">"pod"</span>, <span class="number">12</span>),
+    <span class="string">"🐺"</span>: (<span class="string">"pack"</span>, <span class="number">6</span>),
+    <span class="string">"🦒"</span>: (<span class="string">"tower"</span>, <span class="number">10</span>)
+]
+
+<span class="keyword">let</span> animals = [
+    <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>,
+    <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>, <span class="string">"🐬"</span>,
+    <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>,
+    <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>, <span class="string">"🐺"</span>,
+    <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>,
+    <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>, <span class="string">"🦒"</span>
+]
+
+<span class="keyword">let</span> groupedAnimals = animals
+    .<span class="call">reduce</span>(into: [:]) { animalCounts, animal <span class="keyword">in</span>
+        animalCounts[animal, default: <span class="number">0</span>] += <span class="number">1</span>
+    }
+    .<span class="call">reduce</span>(into: []) { groups, animalCount <span class="keyword">in
+        let</span> animal = animalCount.<span class="property">key</span>
+        <span class="keyword">let</span> amount = animalCount.<span class="property">value</span>
+        <span class="keyword">let</span> groupSize = animalGroups[animal]!.size
+        <span class="keyword">let</span> groupName = animalGroups[animal]!.name
+        <span class="keyword">let</span> amountOfGroups = <span class="type">Int</span>((<span class="type">Double</span>(amount) / <span class="type">Double</span>(groupSize)).<span class="call">rounded</span>())
+        groups.<span class="call">append</span>(<span class="string">"</span>\(amountOfGroups) \(groupName)\(amountOfGroups &gt; <span class="number">1</span> ? <span class="string">"s"</span> : <span class="string">""</span>) <span class="string">of</span> \(animal)<span class="string">"</span>)
+    }
+
+<span class="comment">// ["2 packs of 🐺", "1 tower of 🦒", "1 pod of 🐬"]</span>
+</code></pre><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/swiftmoji">SwiftMoji</a></li><li><a href="/tags/swift">Swift</a></li></ul></div></article></div><footer><p>Built using <a href="https://github.com/apple/swift">Swift</a> and <a href="https://github.com/johnsundell/publish">Publish</a>.</p><p>© 2020 Grant Emerson</p><p><a href="https://twitter.com/grantjemerson">Twitter</a> | <a href="/feed.rss">RSS</a> | <a href="mailto:grant@821apps.com">Email</a></p></footer></body></html>

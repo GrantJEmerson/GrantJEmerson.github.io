@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Grant Emerson"/><link rel="canonical" href="http://www.grantemerson.co/blog/SwiftMoji13"/><meta name="twitter:url" content="http://www.grantemerson.co/blog/SwiftMoji13"/><meta name="og:url" content="http://www.grantemerson.co/blog/SwiftMoji13"/><title>Lunar Phases | Grant Emerson</title><meta name="twitter:title" content="Lunar Phases | Grant Emerson"/><meta name="og:title" content="Lunar Phases | Grant Emerson"/><meta name="description" content="SwiftMoji Entry #13"/><meta name="twitter:description" content="SwiftMoji Entry #13"/><meta name="og:description" content="SwiftMoji Entry #13"/><meta name="twitter:card" content="summary_large_image"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/favicon.ico" type="icon"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Grant Emerson"/><meta name="twitter:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/><meta name="og:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Grant Emerson</a><nav><ul><li><a href="/about">About Me</a></li><li><a class="selected" href="/blog">Blog</a></li><li><a href="/projects">Projects</a></li><li><a href="mailto:grant@821apps.com">Contact</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>Lunar Phases</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="/ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Lunar Phases — SwiftMoji Entry #13</p>
+</div><p>Almost every app across the Apple ecosystem relies on an essential framework called <em>Foundation</em>. In <em>Foundation</em>, Apple provides developers with many useful types and methods. One such type is the <em>Calendar</em> struct which offers a simple API for doing complex calendrical calculations without the need to account for leap years or daylight savings. This is incredibly useful when determining the difference in time between two dates. In the following example, <em>Calendar</em>’s <em>dateComponents(_:from:to:)</em> method is used in conjunction with some magic math to calculate the current lunar phase to a certain degree of accuracy. The <em>daysSinceStart</em> constant is the number of days between now and the first new moon of 1970. That is multiplied by 86,400 to convert to seconds. The offset of 12,300 seconds accounts for the first new moon of 1970 occurring slightly before midnight. Then the total seconds elapsed in the current lunar phase can be calculated by taking the remainder after dividing by 2,551,443 (the number of seconds in a lunar month). The seconds elapsed since the start of the current phase can then be divided by 637,861 to get the current quarter. Modulo 637861 returns the seconds elapsed in the current quarter. If that time interval is greater than a day, the <em>index</em> of the current phase is rounded up.</p><p>Credits: The algorithm was taken from this <a href="https://codegolf.stackexchange.com/questions/69683/calculate-the-lunar-phase">post</a> and adapted for Swift.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">extension</span> <span class="type">Date</span> {
+    <span class="keyword">static let</span> dateFormatter: <span class="type">DateFormatter</span> = {
+        <span class="keyword">let</span> dateFormatter = <span class="type">DateFormatter</span>()
+        dateFormatter.<span class="property">dateFormat</span> = <span class="string">"MM/dd/yyyy"</span>
+        <span class="keyword">return</span> dateFormatter
+    }()
+    
+    <span class="keyword">init</span>(<span class="keyword">_</span> text: <span class="type">String</span>) {
+        <span class="keyword">self</span> = <span class="type">Self</span>.<span class="property">dateFormatter</span>.<span class="call">date</span>(from: text)!
+    }
+}
+
+<span class="keyword">let</span> lunarPhaseStart = <span class="type">Date</span>(<span class="string">"01/07/1970"</span>)
+<span class="keyword">let</span> daysSinceStart = <span class="type">Calendar</span>.<span class="property">current</span>.<span class="call">dateComponents</span>(
+    [.<span class="dotAccess">day</span>],
+    from: lunarPhaseStart,
+    to: <span class="type">Date</span>()
+).<span class="property">day</span>!
+
+<span class="keyword">let</span> seconds = daysSinceStart * <span class="number">86400</span> + <span class="number">12300</span>
+<span class="keyword">let</span> lunarMonths = seconds % <span class="number">2551443</span>
+<span class="keyword">let</span> lunarMonthPart = lunarMonths / <span class="number">637861</span>
+<span class="keyword">let</span> secondsSinceMainPhase = lunarMonths % <span class="number">637861</span>
+
+<span class="keyword">let</span> index = <span class="number">2</span> * lunarMonthPart + (<span class="number">86400</span> &lt;= secondsSinceMainPhase ? <span class="number">1</span> : <span class="number">0</span>)
+
+<span class="keyword">let</span> lunarPhases = [<span class="string">"🌑"</span>, <span class="string">"🌒"</span>, <span class="string">"🌓"</span>, <span class="string">"🌔"</span>, <span class="string">"🌕"</span>, <span class="string">"🌖"</span>, <span class="string">"🌗"</span>, <span class="string">"🌘"</span>]
+<span class="keyword">let</span> lunarPhase = lunarPhases[index]
+
+<span class="keyword">let</span> currentDate = <span class="type">Date</span>.<span class="property">dateFormatter</span>.<span class="call">string</span>(from: <span class="type">Date</span>())
+<span class="call">print</span>(<span class="string">"</span>\(currentDate) <span class="string">-</span> \(lunarPhase)<span class="string">"</span>) <span class="comment">// 10/17/19 - 🌖</span>
+</code></pre><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/swiftmoji">SwiftMoji</a></li><li><a href="/tags/swift">Swift</a></li></ul></div></article></div><footer><p>Built using <a href="https://github.com/apple/swift">Swift</a> and <a href="https://github.com/johnsundell/publish">Publish</a>.</p><p>© 2020 Grant Emerson</p><p><a href="https://twitter.com/grantjemerson">Twitter</a> | <a href="/feed.rss">RSS</a> | <a href="mailto:grant@821apps.com">Email</a></p></footer></body></html>

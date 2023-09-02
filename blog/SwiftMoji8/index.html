@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Grant Emerson"/><link rel="canonical" href="http://www.grantemerson.co/blog/SwiftMoji8"/><meta name="twitter:url" content="http://www.grantemerson.co/blog/SwiftMoji8"/><meta name="og:url" content="http://www.grantemerson.co/blog/SwiftMoji8"/><title>What’s in a Name | Grant Emerson</title><meta name="twitter:title" content="What’s in a Name | Grant Emerson"/><meta name="og:title" content="What’s in a Name | Grant Emerson"/><meta name="description" content="SwiftMoji Entry #8"/><meta name="twitter:description" content="SwiftMoji Entry #8"/><meta name="og:description" content="SwiftMoji Entry #8"/><meta name="twitter:card" content="summary_large_image"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/favicon.ico" type="icon"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Grant Emerson"/><meta name="twitter:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/><meta name="og:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Grant Emerson</a><nav><ul><li><a href="/about">About Me</a></li><li><a class="selected" href="/blog">Blog</a></li><li><a href="/projects">Projects</a></li><li><a href="mailto:grant@821apps.com">Contact</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>What’s in a Name</h1><span class="article-date">Published on Dec 8, 2019</span><div>
+    <img class="article-image" src="/ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">What’s in a Name — SwiftMoji Entry #8</p>
+</div><p>Extracting a list of locations from a <em>String</em>, identifying the language of its contents, or sorting the contained words based on their parts of speech is just a fraction of the limitless capabilities of the <em>Foundation</em> framework’s <em>NSLinguisticTagger</em> class. In the following example, an <em>NSLinguisticTagger</em> is initialized with the <em>nameType</em> <em>NSLinguisticTagScheme</em> and an arbitrary <em>options</em> parameter “reserved for later use.” The tagging scheme specifies the type of text to be enumerated over. The <em>String</em> to be analyzed in this example is an outline of a family. The <em>String</em> can be passed into the <em>tagger</em> for evaluation via its <em>string</em> property. The <em>enumerateTags(in:scheme:options:using:)</em> method on the <em>tagger</em> is then used to extract the desired elements. The method is split into two processes: <strong>segmentation</strong> and <strong>tagging</strong>. First, the portion of the <em>string</em> property within the specified range is split up into segments based on the <em>unit</em> parameter. Then, the <em>units</em> that match the specified <em>scheme</em> are passed to a closure with a range value of their location. In the code example, after binding the optional <em>tag</em> it is verified to match the <em>personalName</em> type. If it does, the <em>NSRange</em> can be cast to a Swift <em>Range</em> to subscript the original string for the tagged name value.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">var</span> 👨‍👩‍👧‍👦 = <span class="string">"""
+    Family:
+    Father's Name: Jayson
+    Mother's Name: Kathrine
+    Daughter's Name: Alannah
+    Son's Name: Jacob
+"""</span>
+
+<span class="keyword">let</span> tagger = <span class="type">NSLinguisticTagger</span>(tagSchemes: [.<span class="dotAccess">nameType</span>], options: <span class="number">0</span>)
+tagger.<span class="property">string</span> = 👨‍👩‍👧‍👦
+
+<span class="keyword">let</span> range = <span class="type">NSRange</span>(👨‍👩‍👧‍👦.startIndex..&lt;👨‍👩‍👧‍👦.endIndex, in: 👨‍👩‍👧‍👦)
+
+<span class="keyword">let</span> options: <span class="type">NSLinguisticTagger</span>.<span class="type">Options</span> = [.<span class="dotAccess">omitPunctuation</span>, .<span class="dotAccess">omitWhitespace</span>, .<span class="dotAccess">joinNames</span>]
+
+tagger.<span class="call">enumerateTags</span>(in: range, unit: .<span class="dotAccess">word</span>, scheme: .<span class="dotAccess">nameType</span>, options: options) { (tag, tokenRange, <span class="keyword">_</span>) <span class="keyword">in
+    if let</span> tag = tag, tag == .<span class="dotAccess">personalName</span> {
+        <span class="keyword">if let</span> range = <span class="type">Range</span>(tokenRange, in: 👨‍👩‍👧‍👦) {
+            <span class="keyword">let</span> name = 👨‍👩‍👧‍👦[range]
+            <span class="call">print</span>(<span class="string">"</span>\(name)<span class="string">"</span>) <span class="comment">// Jayson Katherine Alannah Jacob</span>
+        }
+    }
+}
+</code></pre><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/swiftmoji">SwiftMoji</a></li><li><a href="/tags/swift">Swift</a></li></ul></div></article></div><footer><p>Built using <a href="https://github.com/apple/swift">Swift</a> and <a href="https://github.com/johnsundell/publish">Publish</a>.</p><p>© 2020 Grant Emerson</p><p><a href="https://twitter.com/grantjemerson">Twitter</a> | <a href="/feed.rss">RSS</a> | <a href="mailto:grant@821apps.com">Email</a></p></footer></body></html>
