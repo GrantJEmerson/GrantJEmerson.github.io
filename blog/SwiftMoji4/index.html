@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Grant Emerson"/><link rel="canonical" href="http://www.grantemerson.co/blog/SwiftMoji4"/><meta name="twitter:url" content="http://www.grantemerson.co/blog/SwiftMoji4"/><meta name="og:url" content="http://www.grantemerson.co/blog/SwiftMoji4"/><title>Let’s Build an Invisible Wall | Grant Emerson</title><meta name="twitter:title" content="Let’s Build an Invisible Wall | Grant Emerson"/><meta name="og:title" content="Let’s Build an Invisible Wall | Grant Emerson"/><meta name="description" content="SwiftMoji Entry #4"/><meta name="twitter:description" content="SwiftMoji Entry #4"/><meta name="og:description" content="SwiftMoji Entry #4"/><meta name="twitter:card" content="summary_large_image"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/favicon.ico" type="icon"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Grant Emerson"/><meta name="twitter:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/><meta name="og:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Grant Emerson</a><nav><ul><li><a href="/about">About Me</a></li><li><a class="selected" href="/blog">Blog</a></li><li><a href="/projects">Projects</a></li><li><a href="mailto:grantjemerson@gmail.com">Contact</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>Let’s Build an Invisible Wall</h1><span class="article-date">Published on Dec 4, 2019</span><div>
+    <img class="article-image" src="/ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Let’s Build an Invisible Wall — SwiftMoji Entry #4</p>
+</div><p>Sometimes it is convenient to divide a <em>Collection</em> based on some sort of condition. Luckily, Swift provides the <em>partition(by:)</em> method on <em>Collections</em> to do just that. The <em>by</em> argument to be passed in as the <em>belongsInSecondPartition</em> parameter is a closure with an <em>Element</em> input type and <em>Bool</em> return type. This closure is used to re-order the collection into two halves: one which doesn’t match the specification and subsequently, one that matches. Interestingly, the <em>partition(by:)</em> method has a return type of <em>Int</em>. This number represents the index of the second partition. If the second partition is empty the <em>endIndex</em> of the collection is returned. This method is utilized in the code example below to reorganize a user’s shopping cart based on the <em>isNecessary</em> property of the <em>Item</em> <em>Elements</em>. This allows the user to purchase all the <em>Items</em> that they can afford without neglecting any of the necessities.</p><pre><code><span class="keyword">struct</span> Item {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> isNecessary: <span class="type">Bool</span>
+    <span class="keyword">let</span> price: <span class="type">Int</span>
+}
+
+<span class="keyword">var</span> 🛒 = [
+    <span class="type">Item</span>(name: <span class="string">"📱"</span>, isNecessary: <span class="keyword">false</span>, price: <span class="number">600</span>),
+    <span class="type">Item</span>(name: <span class="string">"🧻"</span>, isNecessary: <span class="keyword">true</span>, price: <span class="number">10</span>),
+    <span class="type">Item</span>(name: <span class="string">"🍎"</span>, isNecessary: <span class="keyword">true</span>, price: <span class="number">5</span>),
+    <span class="type">Item</span>(name: <span class="string">"🎮"</span>, isNecessary: <span class="keyword">false</span>, price: <span class="number">50</span>),
+    <span class="type">Item</span>(name: <span class="string">"💡"</span>, isNecessary: <span class="keyword">true</span>, price: <span class="number">25</span>),
+    <span class="type">Item</span>(name: <span class="string">"🍪"</span>, isNecessary: <span class="keyword">false</span>, price: <span class="number">7</span>)
+]
+
+🛒.<span class="call">partition</span> { !$0.<span class="property">isNecessary</span> }
+
+<span class="keyword">var</span> money = <span class="number">300</span>
+
+<span class="keyword">while</span> !🛒.isEmpty &amp;&amp; (money - 🛒[<span class="number">0</span>].price) &gt;= <span class="number">0</span> {
+    <span class="keyword">let</span> item = 🛒.<span class="call">removeFirst</span>()
+    money -= item.<span class="property">price</span>
+    <span class="call">print</span>(<span class="string">"Bought:</span> \(item.<span class="property">name</span>) <span class="string">for $</span>\(item.<span class="property">price</span>)<span class="string">. Total: $</span>\(money)<span class="string">"</span>)
+}
+
+<span class="comment">// Bought: 💡 for $25. Total: $275
+// Bought: 🧻 for $10. Total: $265
+// Bought: 🍎 for $5. Total: $260
+// Bought: 🎮 for $50. Total: $210</span>
+</code></pre><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/swiftmoji">SwiftMoji</a></li><li><a href="/tags/swift">Swift</a></li></ul></div></article></div><footer><p>Built using <a href="https://github.com/apple/swift">Swift</a> and <a href="https://github.com/johnsundell/publish">Publish</a>.</p><p>© 2023 Grant Emerson</p><p><a href="/feed.rss">RSS</a> | <a href="mailto:grantjemerson@gmail.com">Email</a></p></footer></body></html>

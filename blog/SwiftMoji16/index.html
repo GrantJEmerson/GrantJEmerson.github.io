@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Grant Emerson"/><link rel="canonical" href="http://www.grantemerson.co/blog/SwiftMoji16"/><meta name="twitter:url" content="http://www.grantemerson.co/blog/SwiftMoji16"/><meta name="og:url" content="http://www.grantemerson.co/blog/SwiftMoji16"/><title>In Da Range | Grant Emerson</title><meta name="twitter:title" content="In Da Range | Grant Emerson"/><meta name="og:title" content="In Da Range | Grant Emerson"/><meta name="description" content="SwiftMoji Entry #16"/><meta name="twitter:description" content="SwiftMoji Entry #16"/><meta name="og:description" content="SwiftMoji Entry #16"/><meta name="twitter:card" content="summary_large_image"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/favicon.ico" type="icon"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Grant Emerson"/><meta name="twitter:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/><meta name="og:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Grant Emerson</a><nav><ul><li><a href="/about">About Me</a></li><li><a class="selected" href="/blog">Blog</a></li><li><a href="/projects">Projects</a></li><li><a href="mailto:grantjemerson@gmail.com">Contact</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>In Da Range</h1><span class="article-date">Published on Dec 10, 2019</span><div>
+    <img class="article-image" src="/ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">In Da Range — SwiftMoji Entry #16</p>
+</div><p>Swift provides the pattern matching operator (<em>~=</em>) for matching cases in <em>switch</em> statements. If the operator is overloaded, the specified type of the lhs (left-hand side) can be compared against various values of the rhs in a switch statement. Although the <em>~=</em> operator is hidden under the <em>switch</em> statement’s syntax, it can still be used throughout code directly. In the code example, a musical note is checked to be within the <em>Range</em> of notes of a musician using the <em>~=</em> operator.</p><pre><code><span class="keyword">import</span> Foundation
+
+<span class="keyword">struct</span> Note: <span class="type">Comparable</span> {
+    <span class="keyword">enum</span> NoteLetter: <span class="type">Int</span> {
+        <span class="keyword">case</span> <span class="type">A</span>, <span class="type">Bb</span>, <span class="type">B</span>, <span class="type">C</span>, <span class="type">Db</span>, <span class="type">D</span>, <span class="type">Eb</span>, <span class="type">E</span>, <span class="type">F</span>, <span class="type">Gb</span>, <span class="type">G</span>, <span class="type">Ab</span>
+    }
+    
+    <span class="keyword">let</span> letter: <span class="type">NoteLetter</span>
+    <span class="keyword">let</span> octave: <span class="type">Int</span>
+    
+    <span class="keyword">init</span>(<span class="keyword">_</span> letter: <span class="type">NoteLetter</span>, <span class="keyword">_</span> octave: <span class="type">Int</span>) {
+        <span class="keyword">self</span>.<span class="property">letter</span> = letter
+        <span class="keyword">self</span>.<span class="property">octave</span> = octave
+    }
+    
+    <span class="keyword">static func</span> &lt; (lhs: <span class="type">Note</span>, rhs: <span class="type">Note</span>) -&gt; <span class="type">Bool</span> {
+        <span class="keyword">if</span> lhs.<span class="property">octave</span> != rhs.<span class="property">octave</span> {
+            <span class="keyword">return</span> lhs.<span class="property">octave</span> &lt; rhs.<span class="property">octave</span>
+        }
+        <span class="keyword">return</span> lhs.<span class="property">letter</span>.<span class="property">rawValue</span> &lt; lhs.<span class="property">letter</span>.<span class="property">rawValue</span>
+    }
+}
+
+<span class="keyword">struct</span> Musician {
+    <span class="keyword">let</span> instrument: <span class="type">String</span>
+    <span class="keyword">let</span> range: <span class="type">ClosedRange</span>&lt;<span class="type">Note</span>&gt;
+}
+
+<span class="keyword">var</span> 👨🏻‍🦲 = <span class="type">Musician</span>(instrument: <span class="string">"🎺"</span>, range: <span class="type">Note</span>(.<span class="dotAccess">B</span>, <span class="number">4</span>)...<span class="type">Note</span>(.<span class="dotAccess">Gb</span>, <span class="number">6</span>))
+
+<span class="keyword">if</span> 👨🏻‍🦲.range ~= <span class="type">Note</span>(.<span class="dotAccess">Gb</span>, <span class="number">3</span>) {
+    <span class="call">print</span>(<span class="string">"Awesome, you are a professional!"</span>)
+} <span class="keyword">else</span> {
+    <span class="call">print</span>(<span class="string">"You must practice more."</span>)
+}
+</code></pre><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/swiftmoji">SwiftMoji</a></li><li><a href="/tags/swift">Swift</a></li></ul></div></article></div><footer><p>Built using <a href="https://github.com/apple/swift">Swift</a> and <a href="https://github.com/johnsundell/publish">Publish</a>.</p><p>© 2023 Grant Emerson</p><p><a href="/feed.rss">RSS</a> | <a href="mailto:grantjemerson@gmail.com">Email</a></p></footer></body></html>

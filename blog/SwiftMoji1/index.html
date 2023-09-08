@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Grant Emerson"/><link rel="canonical" href="http://www.grantemerson.co/blog/SwiftMoji1"/><meta name="twitter:url" content="http://www.grantemerson.co/blog/SwiftMoji1"/><meta name="og:url" content="http://www.grantemerson.co/blog/SwiftMoji1"/><title>Keying Into Tuples | Grant Emerson</title><meta name="twitter:title" content="Keying Into Tuples | Grant Emerson"/><meta name="og:title" content="Keying Into Tuples | Grant Emerson"/><meta name="description" content="SwiftMoji Entry #1"/><meta name="twitter:description" content="SwiftMoji Entry #1"/><meta name="og:description" content="SwiftMoji Entry #1"/><meta name="twitter:card" content="summary_large_image"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/favicon.ico" type="icon"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Grant Emerson"/><meta name="twitter:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/><meta name="og:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Grant Emerson</a><nav><ul><li><a href="/about">About Me</a></li><li><a class="selected" href="/blog">Blog</a></li><li><a href="/projects">Projects</a></li><li><a href="mailto:grantjemerson@gmail.com">Contact</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>Keying Into Tuples</h1><span class="article-date">Published on Dec 1, 2019</span><div>
+    <img class="article-image" src="/ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">Keying Into Tuples — SwiftMoji Entry #1</p>
+</div><p>In the release of Swift 5.1, <em>KeyPaths</em> gained support for accessing the elements within a tuple. In the code example below, an array of <em>WritableKeyPaths</em> as passed into a <em>remove(:)</em> function on the <em>HotDog</em> struct. Due to the inherent relationship between chili, cheese, and tomatoes as condiments, they are grouped in a tuple. This avoids the hassle of nesting an additional struct within the <em>HotDog</em> type. Previous to Swift 5.1, this would prevent the users of the <em>remove(:)</em> function from accessing all the ingredients within <em>HotDog</em>. However, now, with recent enhancements, a <em>Person</em> is no longer limited to the ingredients they wish to leave off their <em>HotDog</em>.</p><pre><code><span class="keyword">struct</span> HotDog {
+    <span class="keyword">var</span> bun: <span class="type">String</span>?
+    <span class="keyword">var</span> meat: <span class="type">String</span>?
+    <span class="keyword">var</span> condiments: (chili: <span class="type">String</span>?, cheese: <span class="type">String</span>?, tomatoes: <span class="type">String</span>?)
+    
+    <span class="keyword">var</span> ingredients: <span class="type">String</span> {
+        [bun, meat, condiments.<span class="property">chili</span>, condiments.<span class="property">cheese</span>, condiments.<span class="property">tomatoes</span>]
+            .<span class="call">compactMap</span> { $0 }
+            .<span class="call">joined</span>(separator: <span class="string">", "</span>)
+    }
+    
+    <span class="keyword">mutating func</span> remove(<span class="keyword">_</span> ingredients: <span class="type">Set</span>&lt;<span class="type">WritableKeyPath</span>&lt;<span class="type">Self</span>, <span class="type">String</span>?&gt;&gt;) {
+        ingredients.<span class="call">forEach</span> { <span class="keyword">self</span>[keyPath: $0] = <span class="keyword">nil</span> }
+    }
+}
+
+<span class="keyword">struct</span> Person {
+    <span class="keyword">let</span> name: <span class="type">String</span>
+    <span class="keyword">let</span> dislikedIngredients: <span class="type">Set</span>&lt;<span class="type">WritableKeyPath</span>&lt;<span class="type">HotDog</span>, <span class="type">String</span>?&gt;&gt;
+}
+
+<span class="keyword">var</span> 🌭 = <span class="type">HotDog</span>(bun: <span class="string">"🥖"</span>, meat: <span class="string">"🦃"</span>,
+                condiments: (chili: <span class="string">"🌶"</span>, cheese: <span class="string">"🧀"</span>, tomatoes: <span class="string">"🍅"</span>))
+
+<span class="keyword">let</span> 👨‍🍳 = <span class="type">Person</span>(
+    name: <span class="string">"Timothy"</span>,
+    dislikedIngredients: [
+        \<span class="type">HotDog</span>.<span class="property">condiments</span>.<span class="property">chili</span>,
+        \<span class="type">HotDog</span>.<span class="property">condiments</span>.<span class="property">tomatoes</span>
+    ]
+)
+
+🌭.<span class="call">remove</span>(👨‍🍳.dislikedIngredients)
+<span class="call">print</span>(<span class="string">"👨‍🍳's 🌭 has:</span> \(🌭.ingredients)<span class="string">"</span>)
+</code></pre><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/swiftmoji">SwiftMoji</a></li><li><a href="/tags/swift">Swift</a></li></ul></div></article></div><footer><p>Built using <a href="https://github.com/apple/swift">Swift</a> and <a href="https://github.com/johnsundell/publish">Publish</a>.</p><p>© 2023 Grant Emerson</p><p><a href="/feed.rss">RSS</a> | <a href="mailto:grantjemerson@gmail.com">Email</a></p></footer></body></html>

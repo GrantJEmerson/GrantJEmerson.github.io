@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="og:site_name" content="Grant Emerson"/><link rel="canonical" href="http://www.grantemerson.co/blog/SwiftMoji5"/><meta name="twitter:url" content="http://www.grantemerson.co/blog/SwiftMoji5"/><meta name="og:url" content="http://www.grantemerson.co/blog/SwiftMoji5"/><title>No Sweat for OptionSet | Grant Emerson</title><meta name="twitter:title" content="No Sweat for OptionSet | Grant Emerson"/><meta name="og:title" content="No Sweat for OptionSet | Grant Emerson"/><meta name="description" content="SwiftMoji Entry #5"/><meta name="twitter:description" content="SwiftMoji Entry #5"/><meta name="og:description" content="SwiftMoji Entry #5"/><meta name="twitter:card" content="summary_large_image"/><link rel="stylesheet" href="/styles.css" type="text/css"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><link rel="shortcut icon" href="/favicon.ico" type="icon"/><link rel="alternate" href="/feed.rss" type="application/rss+xml" title="Subscribe to Grant Emerson"/><meta name="twitter:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/><meta name="og:image" content="http://www.grantemerson.co/ArticleImages/SwiftMoji.jpeg"/></head><body class="item-page"><header><div class="wrapper"><a class="site-name" href="/">Grant Emerson</a><nav><ul><li><a href="/about">About Me</a></li><li><a class="selected" href="/blog">Blog</a></li><li><a href="/projects">Projects</a></li><li><a href="mailto:grantjemerson@gmail.com">Contact</a></li></ul></nav></div></header><div class="wrapper"><article><div class="content"><h1>No Sweat for OptionSet</h1><span class="article-date">Published on Dec 5, 2019</span><div>
+    <img class="article-image" src="/ArticleImages/SwiftMoji.jpeg">
+    <p class="article-image-description">No Sweat for OptionSet — SwiftMoji Entry #5</p>
+</div><p><em>OptionSet</em> is a protocol in Swift that provides a way to efficiently combine a group of related values into a set using an underlying bitmask — a group of bits (0s and 1s) that can be programmatically switched on and off using bitwise operations. <em>OptionSet</em> conforms to <em>SetAlgebra</em> and can therefore be declared with the <em>Array Literal</em> syntax (e.g. <em>[.x, .y]</em>). A struct can conform to <em>OptionSet</em> by providing a <em>rawValue</em> property along with a group of static constant instances of the conforming type. The bitwise left shift operator (<em>&lt;&lt;</em>) is used to assign each instance to a unique <em>rawValue</em> with a single bit. For example, 1 &lt;&lt; 4 is 0b10000 in binary and has only one bit-value turned on. The usage of single bits for expressing membership makes storing <em>OptionSets</em> very efficient. For example, a set of 🎒<em>Items</em> containing a 💻, 📓, and 📷 would be represented as a single binary integer 0b00111 in memory. <em>OptionSets</em> also work with common set operations such as <em>union(_:)</em> which allows for static constant sets to be melded together.</p><pre><code><span class="keyword">struct</span> 🎒<span class="type">Items</span>: <span class="type">OptionSet</span> {
+    <span class="keyword">let</span> rawValue: <span class="type">Int</span>
+    
+    <span class="keyword">static let</span> 💻 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">0</span>)
+    <span class="keyword">static let</span> 📓 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">1</span>)
+    <span class="keyword">static let</span> 📷 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">2</span>)
+    <span class="keyword">static let</span> 🔦 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">3</span>)
+    <span class="keyword">static let</span> 🍎 = 🎒<span class="type">Items</span>(rawValue: <span class="number">1</span> &lt;&lt; <span class="number">4</span>)
+    
+    <span class="keyword">static let</span> school: 🎒<span class="type">Items</span> = [.💻, .📓]
+    <span class="keyword">static let</span> hike: 🎒<span class="type">Items</span> = [.🔦, .🍎]
+    <span class="keyword">static let</span> all: 🎒<span class="type">Items</span> = [.💻, .📓, .📷, .🔦, .🍎]
+}
+
+<span class="keyword">struct</span> 🎒 {
+    <span class="keyword">enum</span> Color {
+        <span class="keyword">case</span> black, white, red
+    }
+    
+    <span class="keyword">var</span> color: <span class="type">Color</span>
+    <span class="keyword">var</span> items: 🎒<span class="type">Items</span>
+}
+
+<span class="keyword">var</span> fieldTrip🎒 = 🎒(color: .<span class="dotAccess">red</span>, items: 🎒<span class="type">Items</span>.<span class="property">school</span>.<span class="call">union</span>(.<span class="dotAccess">hike</span>))
+</code></pre><span>Tagged with: </span><ul class="tag-list"><li><a href="/tags/swiftmoji">SwiftMoji</a></li><li><a href="/tags/swift">Swift</a></li></ul></div></article></div><footer><p>Built using <a href="https://github.com/apple/swift">Swift</a> and <a href="https://github.com/johnsundell/publish">Publish</a>.</p><p>© 2023 Grant Emerson</p><p><a href="/feed.rss">RSS</a> | <a href="mailto:grantjemerson@gmail.com">Email</a></p></footer></body></html>
