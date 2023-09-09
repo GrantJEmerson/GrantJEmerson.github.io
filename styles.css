@@ -396,6 +396,12 @@ a {
     border-radius: 17.5px;
 }
 
+.youtube-video {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: block;
+}
+
 footer {
     color: #CBB221;
     padding-bottom: 20px;
